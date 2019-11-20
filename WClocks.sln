@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.902
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WClocks", "WClocks\WClocks.csproj", "{07C67ED6-621F-4D0A-B139-B4325CEC4CFF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xceed.Wpf.Toolkit", "Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj", "{72E591D6-8F83-4D8C-8F67-9C325E623234}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorPicker", "ColorPickerLib\ColorPicker.csproj", "{99E90579-62FC-4898-B168-24F7DBD3A34D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{07C67ED6-621F-4D0A-B139-B4325CEC4CFF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07C67ED6-621F-4D0A-B139-B4325CEC4CFF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07C67ED6-621F-4D0A-B139-B4325CEC4CFF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07C67ED6-621F-4D0A-B139-B4325CEC4CFF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72E591D6-8F83-4D8C-8F67-9C325E623234}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72E591D6-8F83-4D8C-8F67-9C325E623234}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72E591D6-8F83-4D8C-8F67-9C325E623234}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72E591D6-8F83-4D8C-8F67-9C325E623234}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99E90579-62FC-4898-B168-24F7DBD3A34D}.Debug|Any CPU.ActiveCfg = Release|Any CPU
+		{99E90579-62FC-4898-B168-24F7DBD3A34D}.Debug|Any CPU.Build.0 = Release|Any CPU
+		{99E90579-62FC-4898-B168-24F7DBD3A34D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99E90579-62FC-4898-B168-24F7DBD3A34D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7FF5C780-295B-4CCA-B57B-110E9C63CC4B}
+	EndGlobalSection
+EndGlobal
