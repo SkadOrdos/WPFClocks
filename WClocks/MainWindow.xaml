@@ -43,7 +43,7 @@
                         ScaleY="{Binding ElementName=MainClockWindow, Path=GridScaleValue}" />
             </Grid.LayoutTransform>
             <Grid.ContextMenu>
-                <ContextMenu x:Name="clocksContextMenu">
+                <ContextMenu x:Name="clocksContextMenu" Opened="Clocks_ContextMenuOpening">
                     <MenuItem Header="Location" x:Name="clocksLocationMenu">
                         <MenuItem Header="Desktop" x:Name="itemLocationDesktop" Click="MenuLocation_Click" Tag="Desktop"></MenuItem>
                         <MenuItem Header="TopMost" x:Name="itemLocationTopMost" Click="MenuLocation_Click" Tag="TopMost"></MenuItem>
@@ -58,6 +58,7 @@
                         <MenuItem Header="200%" Click="MenuSize_Click" Tag="200"></MenuItem>
                     </MenuItem>
                     <MenuItem Header="Color" Click="MenuColor_Click"></MenuItem>
+                    <MenuItem Header="Autorun" x:Name="itemAutorun" Click="MenuAutorun_Click"></MenuItem>
                     <MenuItem Header="Refresh" Click="MenuRefresh_Click"></MenuItem>
                     <MenuItem Header="Close" Click="MenuClose_Click"></MenuItem>
                 </ContextMenu>

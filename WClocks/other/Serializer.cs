@@ -92,6 +92,8 @@ namespace WClocks
 
         public static void SaveToXml<T>(String fileName, T serializableObject, XmlWriterSettings xmlSettings = null)
         {
+            if (!Directory.Exists(Path.GetDirectoryName(fileName))) Directory.CreateDirectory(Path.GetDirectoryName(fileName));
+
             XtraXmlSerializer serializer = new XtraXmlSerializer(typeof(T));
             using (TextWriter writer = new StreamWriter(fileName))
             {

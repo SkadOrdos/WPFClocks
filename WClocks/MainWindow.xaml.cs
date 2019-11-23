@@ -62,7 +62,13 @@ namespace WClocks
 
         private void LoadSettings()
         {
-            settings = Serializer.SafeLoadFromXml<WClockSet>(config, null) ?? new WClockSet();
+            if (System.IO.File.Exists(config)) settings = Serializer.SafeLoadFromXml<WClockSet>(config, null) ?? new WClockSet();
+            else
+            {
+                // Compatible for previous version
+                string oldConfigPath = System.IO.Path.Combine(userAppFolder, "wclock.xml");
+                settings = Serializer.SafeLoadFromXml<WClockSet>(oldConfigPath, null) ?? new WClockSet();
+            }
 
             SetLocationOptions(settings.Location);
             SetSizeOptions(settings.Size.ToString());
@@ -81,8 +87,11 @@ namespace WClocks
         }
 
         private WClockSet settings;
-        private DispatcherTimer mainTimer = new DispatcherTimer();
-        readonly string config = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "wclock.xml");
+        readonly AutorunManager autorunManager;
+        readonly DispatcherTimer mainTimer = new DispatcherTimer();
+        static string userAppFolder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+        static string applicationFolder = System.IO.Path.Combine(userAppFolder, "WClocks");
+        static string config = System.IO.Path.Combine(applicationFolder, "wclock.xml");
 
         double DefaultWindowWidth => 250f;
         double DefaultWindowHeight => 270f;
@@ -99,6 +108,7 @@ namespace WClocks
             this.Closed += MainWindow_Closed;
 
             LoadSettings();
+            autorunManager = new AutorunManager(applicationFolder);
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -206,6 +216,11 @@ namespace WClocks
 
         #region// Menu
 
+        private void Clocks_ContextMenuOpening(object sender, RoutedEventArgs e)
+        {
+            itemAutorun.IsChecked = autorunManager.IsAutorunEnabled;
+        }
+
         private MenuItem FindMenuItem(MenuItem ownerMenu, string tag)
         {
             return ownerMenu.Items.OfType<MenuItem>()
@@ -305,6 +320,20 @@ namespace WClocks
             SetElementColor(GetUserDrawingColor((SolidColorBrush)pathEllipse.Fill));
         }
 
+        private void MenuAutorun_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = (MenuItem)sender;
+            if (autorunManager.IsAutorunEnabled)
+            {
+                autorunManager.DisableAutorun();
+                menuItem.IsChecked = false;
+            }
+            else
+            {
+                autorunManager.EnableAutorun();
+                menuItem.IsChecked = true;
+            }
+        }
 
         private void MenuRefresh_Click(object sender, RoutedEventArgs e)
         {
