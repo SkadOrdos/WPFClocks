@@ -21,6 +21,8 @@ namespace WClocks
     /// </summary>
     public partial class MainWindow : Window
     {
+        const string APP_NAME = "WClocks";
+
         #region Arrows Dependency Property
 
         public static readonly DependencyProperty AngleSecondProperty = DependencyProperty.Register("AngleSecond", typeof(double), typeof(MainWindow), new UIPropertyMetadata(default(double)));
@@ -90,7 +92,7 @@ namespace WClocks
         readonly AutorunManager autorunManager;
         readonly DispatcherTimer mainTimer = new DispatcherTimer();
         static string userAppFolder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
-        static string applicationFolder = System.IO.Path.Combine(userAppFolder, "WClocks");
+        static string applicationFolder = System.IO.Path.Combine(userAppFolder, APP_NAME);
         static string config = System.IO.Path.Combine(applicationFolder, "wclock.xml");
 
         double DefaultWindowWidth => 250f;
@@ -108,7 +110,7 @@ namespace WClocks
             this.Closed += MainWindow_Closed;
 
             LoadSettings();
-            autorunManager = new AutorunManager(applicationFolder);
+            autorunManager = new AutorunManager(APP_NAME, applicationFolder);
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -323,16 +325,11 @@ namespace WClocks
         private void MenuAutorun_Click(object sender, RoutedEventArgs e)
         {
             var menuItem = (MenuItem)sender;
-            if (autorunManager.IsAutorunEnabled)
-            {
-                autorunManager.DisableAutorun();
-                menuItem.IsChecked = false;
-            }
-            else
-            {
-                autorunManager.EnableAutorun();
-                menuItem.IsChecked = true;
-            }
+            bool autorun = autorunManager.IsAutorunEnabled;
+            if (autorun) autorunManager.DisableAutorun();
+            else autorunManager.EnableAutorun();
+
+            menuItem.IsChecked = !(autorun);
         }
 
         private void MenuRefresh_Click(object sender, RoutedEventArgs e)

@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WClocks"
         mc:Ignorable="d"
         Title="WClock" Name="MainClockWindow" Width="250" Height="270" AllowsTransparency="True" WindowStyle="None" Background="Transparent"
             ShowInTaskbar="False" Icon="icons/clock.ico" UseLayoutRounding="True" ResizeMode="NoResize">
@@ -20,6 +19,7 @@
                 <ColumnDefinition Width="19"></ColumnDefinition>
                 <ColumnDefinition Width="19"></ColumnDefinition>
             </Grid.ColumnDefinitions>
+            <TextBlock x:Name="blockCaption" Foreground="White" VerticalAlignment="Center" FontSize="14" FontStyle="Italic" FontFamily="Consolas"></TextBlock>
             <Image Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,0,1,0" Source="icons/menu-move.png" Cursor="SizeAll">
                 <Image.Clip>
                     <EllipseGeometry Center="13,9" RadiusX="13" RadiusY="13"/>
@@ -63,6 +63,8 @@
                     <MenuItem Header="Close" Click="MenuClose_Click"></MenuItem>
                 </ContextMenu>
             </Grid.ContextMenu>
+            <TextBlock x:Name="blockFirm" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,125,0,0" 
+                       FontSize="14" FontStyle="Italic" FontFamily="Consolas"></TextBlock>
             <Line Stroke="Black" StrokeThickness="2" X1="125" Y1="140" X2="125" Y2="60" x:Name="ShadowLineHour" RenderTransformOrigin="0.5,0.5" Opacity="0.25" Tag="ShadowLine" Panel.ZIndex="1">
                 <Line.Effect>
                     <BlurEffect Radius="1"></BlurEffect>

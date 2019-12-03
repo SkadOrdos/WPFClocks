@@ -6,20 +6,30 @@ namespace WClocks
 {
     class AutorunManager
     {
+        readonly string applicationName;
         readonly string applicationPath;
-        public AutorunManager(string appFolder)
+        public AutorunManager(string appName, string appFolder)
         {
-            applicationPath = Path.Combine(appFolder, AppDomain.CurrentDomain.FriendlyName);
-            string assemblyPath = Assembly.GetExecutingAssembly().Location;
-
-            if (File.GetLastWriteTime(applicationPath) < File.GetLastWriteTime(assemblyPath))
-                File.Copy(assemblyPath, applicationPath, true);
+            applicationName = appName + ".exe";
+            applicationPath = Path.Combine(appFolder, applicationName);
+            InstallApp(applicationPath);
         }
 
+        private void InstallApp(string installPath)
+        {
+            try
+            {
+                string assemblyPath = Assembly.GetExecutingAssembly().Location;
+
+                if (File.GetLastWriteTime(installPath) < File.GetLastWriteTime(assemblyPath))
+                    File.Copy(assemblyPath, installPath, true);
+            }
+            catch (Exception ex) { }
+        }
 
         private string GetAutorunPath(string fileExt = ".lnk")
         {
-            string appName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName);
+            string appName = Path.GetFileNameWithoutExtension(applicationName);
             string startupFolder = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
             return Path.Combine(startupFolder, appName + fileExt);
         }
@@ -37,7 +47,7 @@ namespace WClocks
 
         private void CreateShortcut()
         {
-            string appName = Path.GetFileNameWithoutExtension(AppDomain.CurrentDomain.FriendlyName);
+            string appName = Path.GetFileNameWithoutExtension(applicationName);
 
             object shDesktop = (object)"Startup"; // (object)"Desktop"
             IWshRuntimeLibrary.WshShell shell = new IWshRuntimeLibrary.WshShell();
