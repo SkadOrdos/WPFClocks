@@ -70,16 +70,12 @@
                     <BlurEffect Radius="1"></BlurEffect>
                 </Line.Effect>
                 <Line.RenderTransform>
-                    <TransformGroup>
-                        <RotateTransform Angle="{Binding Path=AngleHour}" x:Name="ShadowLineRotateHour" />
-                    </TransformGroup>
+                    <RotateTransform Angle="{Binding Path=AngleHour}" x:Name="ShadowLineRotateHour" />
                 </Line.RenderTransform>
             </Line>
             <Line Stroke="White" StrokeThickness="2" X1="125" Y1="140" X2="125" Y2="60" x:Name="LineHour" RenderTransformOrigin="0.5,0.5" Panel.ZIndex="2">
                 <Line.RenderTransform>
-                    <TransformGroup>
-                        <RotateTransform Angle="{Binding Path=AngleHour}" x:Name="LineRotateHour" />
-                    </TransformGroup>
+                    <RotateTransform Angle="{Binding Path=AngleHour}" x:Name="LineRotateHour" />
                 </Line.RenderTransform>
             </Line>
             <Line Stroke="Black" StrokeThickness="2" X1="125" Y1="140" X2="125" Y2="20" x:Name="ShadowLineMinute" RenderTransformOrigin="0.5,0.5" Opacity="0.25" Tag="ShadowLine" Panel.ZIndex="3">
@@ -87,16 +83,12 @@
                     <BlurEffect Radius="1"></BlurEffect>
                 </Line.Effect>
                 <Line.RenderTransform>
-                    <TransformGroup>
-                        <RotateTransform Angle="{Binding Path=AngleMinute}" x:Name="ShadowLineRotateMinute" />
-                    </TransformGroup>
+                    <RotateTransform Angle="{Binding Path=AngleMinute}" x:Name="ShadowLineRotateMinute" />
                 </Line.RenderTransform>
             </Line>
             <Line Stroke="White" StrokeThickness="2" X1="125" Y1="140" X2="125" Y2="20" x:Name="LineMinute" RenderTransformOrigin="0.5,0.5" Panel.ZIndex="4">
                 <Line.RenderTransform>
-                    <TransformGroup>
-                        <RotateTransform Angle="{Binding Path=AngleMinute}" x:Name="LineRotateMinute" />
-                    </TransformGroup>
+                    <RotateTransform Angle="{Binding Path=AngleMinute}" x:Name="LineRotateMinute" />
                 </Line.RenderTransform>
             </Line>
             <Line Stroke="Black" StrokeThickness="1" X1="125" Y1="140" X2="125" Y2="20" x:Name="ShadowLineSecond" RenderTransformOrigin="0.5,0.5" Opacity="0.25" Tag="ShadowLine" Panel.ZIndex="5">
@@ -104,24 +96,18 @@
                     <BlurEffect Radius="1"></BlurEffect>
                 </Line.Effect>
                 <Line.RenderTransform>
-                    <TransformGroup>
-                        <RotateTransform Angle="{Binding Path=AngleSecond}" x:Name="ShadowLineRotateSecond" />
-                    </TransformGroup>
+                    <RotateTransform Angle="{Binding Path=AngleSecond}" x:Name="ShadowLineRotateSecond" />
                 </Line.RenderTransform>
             </Line>
             <Line Stroke="White" StrokeThickness="1" X1="125" Y1="140" X2="125" Y2="20" x:Name="LineSecond" RenderTransformOrigin="0.5,0.5" Panel.ZIndex="6">
                 <Line.RenderTransform>
-                    <TransformGroup>
-                        <RotateTransform Angle="{Binding Path=AngleSecond}" x:Name="LineRotateSecond" />
-                    </TransformGroup>
+                    <RotateTransform Angle="{Binding Path=AngleSecond}" x:Name="LineRotateSecond" />
                 </Line.RenderTransform>
             </Line>
 
             <Path Width="10" Height="10" Fill="White" x:Name="pathEllipse" StrokeThickness="2" Stretch="UniformToFill" Panel.ZIndex="10">
                 <Path.Data>
-                    <GeometryGroup>
-                        <EllipseGeometry Center="0,0" RadiusX="1" RadiusY="1" />
-                    </GeometryGroup>
+                    <EllipseGeometry Center="0,0" RadiusX="1" RadiusY="1" />
                 </Path.Data>
             </Path>
         </Grid>

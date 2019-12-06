@@ -198,16 +198,17 @@ namespace WClocks
 
         private void UpdateShadows()
         {
-            UpdateShadowLine(ShadowLineSecond, LineSecond, AngleSecond);
-            UpdateShadowLine(ShadowLineMinute, LineMinute, AngleMinute);
-            UpdateShadowLine(ShadowLineHour, LineHour, AngleHour);
+            UpdateShadowLine(ShadowLineSecond, LineSecond);
+            UpdateShadowLine(ShadowLineMinute, LineMinute);
+            UpdateShadowLine(ShadowLineHour, LineHour);
         }
 
         int shadowOffset = 3;
-        private void UpdateShadowLine(Line shadowLine, Line parent, double parentAngle)
+        private void UpdateShadowLine(Line shadowLine, Line parent)
         {
             int screenPosition = (this.Left > SystemParameters.WorkArea.Width / 2) ? 1 : -1;
-            // 3 = Shadow offset from arrow, 180 - half of circle in degrees, source of light on the top
+            // 3 = Shadow offset from arrow, 180 - half of circle in degrees, source of light on the top of screen
+            double parentAngle = Convert.ToDouble((parent.RenderTransform as RotateTransform)?.Angle);
             double shadowLineOffset = shadowOffset * (Math.Sin(parentAngle / 180 * Math.PI));
 
             shadowLine.X1 = parent.X1 + shadowLineOffset;
