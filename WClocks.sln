@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.902
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29806.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WClocks", "WClocks\WClocks.csproj", "{07C67ED6-621F-4D0A-B139-B4325CEC4CFF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Xceed.Wpf.Toolkit", "Xceed.Wpf.Toolkit\Xceed.Wpf.Toolkit.csproj", "{72E591D6-8F83-4D8C-8F67-9C325E623234}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ColorPicker", "ColorPickerLib\ColorPicker.csproj", "{99E90579-62FC-4898-B168-24F7DBD3A34D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WClocksCore", "WClocksCore\WClocksCore.csproj", "{99825232-70B4-4D4D-8B85-5BB34DB8F7CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{99E90579-62FC-4898-B168-24F7DBD3A34D}.Debug|Any CPU.Build.0 = Release|Any CPU
 		{99E90579-62FC-4898-B168-24F7DBD3A34D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{99E90579-62FC-4898-B168-24F7DBD3A34D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99825232-70B4-4D4D-8B85-5BB34DB8F7CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99825232-70B4-4D4D-8B85-5BB34DB8F7CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99825232-70B4-4D4D-8B85-5BB34DB8F7CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99825232-70B4-4D4D-8B85-5BB34DB8F7CF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

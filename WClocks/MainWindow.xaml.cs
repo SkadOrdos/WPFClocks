@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,7 +22,7 @@ namespace WClocks
     /// </summary>
     public partial class MainWindow : Window
     {
-        const string APP_NAME = "WClocks";
+        public const string APP_NAME = "WClocks";
 
         #region Arrows Dependency Property
 
@@ -62,20 +63,37 @@ namespace WClocks
         #endregion
 
 
+        private WClockSet settings;
+        readonly AutorunManager autorunManager;
+        readonly DispatcherTimer mainTimer = new DispatcherTimer();
+        public static readonly string UserAppFolder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+        public static readonly string ApplicationFolder = System.IO.Path.Combine(UserAppFolder, APP_NAME);
+        static string config = System.IO.Path.Combine(ApplicationFolder, "wclock.xml");
+
+        double DefaultWindowWidth => 250f;
+        double DefaultWindowHeight => 270f;
+        int IconsHeaderHeight => 20;
+
         private void LoadSettings()
         {
-            if (System.IO.File.Exists(config)) settings = Serializer.SafeLoadFromXml<WClockSet>(config, null) ?? new WClockSet();
-            else
+            // Compatible for previous version
+            string configPath = System.IO.File.Exists(config) ? config : System.IO.Path.Combine(UserAppFolder, "wclock.xml");
+            try
             {
-                // Compatible for previous version
-                string oldConfigPath = System.IO.Path.Combine(userAppFolder, "wclock.xml");
-                settings = Serializer.SafeLoadFromXml<WClockSet>(oldConfigPath, null) ?? new WClockSet();
+                settings = Serializer.SafeLoadFromXml<WClockSet>(config, null) ?? new WClockSet();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Launch error\n\nError load config from\n{configPath}\n\nDetails: {ex.Message}", APP_NAME, MessageBoxButton.OK, MessageBoxImage.Error);
+                Logger.Error(ex.Message);
             }
 
             SetLocationOptions(settings.Location);
             SetSizeOptions(settings.Size.ToString());
-            SetElementColor(settings.FaceColor.CurrentColor);
-            if (settings.IsScreenPosition)
+            SetShapeColor(settings.FaceColor.CurrentColor);
+
+            var screenRect = new Rect(0, 0, SystemParameters.WorkArea.Width - this.Width, SystemParameters.WorkArea.Height - this.Height);
+            if (screenRect.Contains(settings.Position))
             {
                 this.Left = settings.Position.X;
                 this.Top = settings.Position.Y;
@@ -88,29 +106,18 @@ namespace WClocks
             Serializer.SaveToXml(config, settings);
         }
 
-        private WClockSet settings;
-        readonly AutorunManager autorunManager;
-        readonly DispatcherTimer mainTimer = new DispatcherTimer();
-        static string userAppFolder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
-        static string applicationFolder = System.IO.Path.Combine(userAppFolder, APP_NAME);
-        static string config = System.IO.Path.Combine(applicationFolder, "wclock.xml");
-
-        double DefaultWindowWidth => 250f;
-        double DefaultWindowHeight => 270f;
-        int IconsHeaderHeight => 20;
-
         public MainWindow()
         {
             InitializeComponent();
             DataContext = this;
+            LoadSettings();
             InitClock();
+
+            autorunManager = new AutorunManager(APP_NAME, ApplicationFolder);
 
             this.MouseLeftButtonDown += MainWindow_MouseLeftButtonDown;
             this.Loaded += MainWindow_Loaded;
             this.Closed += MainWindow_Closed;
-
-            LoadSettings();
-            autorunManager = new AutorunManager(APP_NAME, applicationFolder);
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
@@ -175,6 +182,8 @@ namespace WClocks
                 Panel.SetZIndex(linePath, 0);
                 this.clocksGrid.Children.Add(linePath);
             }
+
+            SetShapeColor(settings.FaceColor.CurrentColor);
         }
 
         private void MainTimer_Tick(object sender, EventArgs e)
@@ -209,7 +218,7 @@ namespace WClocks
             int screenPosition = (this.Left > SystemParameters.WorkArea.Width / 2) ? 1 : -1;
             // 3 = Shadow offset from arrow, 180 - half of circle in degrees, source of light on the top of screen
             double parentAngle = Convert.ToDouble((parent.RenderTransform as RotateTransform)?.Angle);
-            double shadowLineOffset = shadowOffset * (Math.Sin(parentAngle / 180 * Math.PI));
+            double shadowLineOffset = shadowOffset * Math.Round(Math.Sin(parentAngle / 180 * Math.PI), 6);
 
             shadowLine.X1 = parent.X1 + shadowLineOffset;
             shadowLine.Y1 = parent.Y1 - shadowLineOffset * screenPosition;
@@ -300,7 +309,7 @@ namespace WClocks
             return mediaColor;
         }
 
-        private void SetElementColor(System.Windows.Media.Color mediaColor)
+        private void SetShapeColor(System.Windows.Media.Color mediaColor)
         {
             var userColorBrush = new SolidColorBrush(mediaColor);
             foreach (var shapeElement in clocksGrid.Children.OfType<Shape>())
@@ -315,12 +324,12 @@ namespace WClocks
 
         private void ColorDialog_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)
         {
-            SetElementColor(e.NewValue);
+            SetShapeColor(e.NewValue);
         }
 
         private void MenuColor_Click(object sender, RoutedEventArgs e)
         {
-            SetElementColor(GetUserDrawingColor((SolidColorBrush)pathEllipse.Fill));
+            SetShapeColor(GetUserDrawingColor((SolidColorBrush)pathEllipse.Fill));
         }
 
         private void MenuAutorun_Click(object sender, RoutedEventArgs e)

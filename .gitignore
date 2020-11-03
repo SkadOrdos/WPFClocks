@@ -7,3 +7,7 @@
 /WClocks/bin
 /ColorPickerLib/obj/Release
 /ColorPickerLib/bin/Release
+/packages
+/WClocksCore/bin
+/WClocksCore/obj
+/Xceed.Wpf.Toolkit

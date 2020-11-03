@@ -76,16 +76,6 @@ namespace WClocks
 
         public Point Position { get; set; }
 
-        public bool IsScreenPosition
-        {
-            get
-            {
-                double sW = System.Windows.SystemParameters.WorkArea.Width - 250;
-                double sH = System.Windows.SystemParameters.WorkArea.Height - 250;
-                return Position.X >= 0 && Position.X <= sW && Position.Y >= 0 && Position.Y <= sH;
-            }
-        }
-
         public int Size { get; set; } = 100;
 
 

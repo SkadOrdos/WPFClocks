@@ -1,0 +1,94 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net45</TargetFramework>
+    <PublishTrimmed>true</PublishTrimmed>
+    <PublishReadyToRun>true</PublishReadyToRun>
+    <PublishSingleFile>true</PublishSingleFile>
+    <RuntimeIdentifier>win-x86</RuntimeIdentifier>
+    <UseWPF>true</UseWPF>
+    <StartupObject>WClocksCore.App</StartupObject>
+    <ApplicationIcon>icons\clock.ico</ApplicationIcon>
+    <AssemblyName>WClocks</AssemblyName>
+    <RootNamespace>WClocks</RootNamespace>
+    <Version>1.0.5</Version>
+    <Company />
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>WClocks_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
+    <Authors>Serhii Vishnov</Authors>
+    <Copyright>WClocks @ 2020</Copyright>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Prefer32Bit>true</Prefer32Bit>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <PlatformTarget>x86</PlatformTarget>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="icons\clock.ico" />
+    <None Remove="icons\icons-alarm.ico" />
+    <None Remove="icons\icons.rar" />
+    <None Remove="icons\menu-close.png" />
+    <None Remove="icons\menu-hide.png" />
+    <None Remove="icons\menu-move.png" />
+    <None Remove="icons\menu-settings.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <COMReference Include="IWshRuntimeLibrary.dll">
+      <Guid>f935dc20-1cf0-11d0-adb9-00c04fd58a0b</Guid>
+      <VersionMajor>1</VersionMajor>
+      <VersionMinor>0</VersionMinor>
+      <WrapperTool>tlbimp</WrapperTool>
+      <Lcid>0</Lcid>
+      <Isolated>false</Isolated>
+      <EmbedInteropTypes>true</EmbedInteropTypes>
+      <Private>false</Private>
+    </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="icons\clock.ico" />
+    <Resource Include="icons\icons-alarm.ico" />
+    <Resource Include="icons\menu-close.png" />
+    <Resource Include="icons\menu-hide.png" />
+    <Resource Include="icons\menu-move.png" />
+    <Resource Include="icons\menu-settings.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ColorPicker\ColorPickerDialog.xaml.cs">
+      <DependentUpon>ColorPickerDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="MainWindow.xaml.cs">
+      <SubType>Code</SubType>
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="ColorPicker\ColorPickerDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Themes\generic.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
+  <ItemGroup>
+    <TrimmerRootAssembly Include="System.IO.FileSystem" />
+  </ItemGroup>
+
+</Project>

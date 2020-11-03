@@ -28,6 +28,8 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -49,12 +51,13 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>icons\clock.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>9BD2B4B0548717AEFF72DAAE47FE6DA39BB2A5AD</ManifestCertificateThumbprint>
@@ -72,17 +75,19 @@
   <PropertyGroup>
     <StartupObject>WClocks.App</StartupObject>
   </PropertyGroup>
+  <PropertyGroup>
+    <DelaySign>false</DelaySign>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -90,13 +95,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="other\AutorunManager.cs" />
+    <Compile Include="other\Logger.cs" />
     <Compile Include="other\ResourceLoader.cs" />
     <Compile Include="other\WinExtern.cs" />
-    <Compile Include="Samples\ColorPicker.cs" />
-    <Compile Include="Samples\ColorPickerDialog.xaml.cs">
+    <Compile Include="ColorPicker\ColorPicker.cs" />
+    <Compile Include="ColorPicker\ColorPickerDialog.xaml.cs">
       <DependentUpon>ColorPickerDialog.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Samples\SupportingClasses.cs" />
+    <Compile Include="ColorPicker\SupportingClasses.cs" />
     <Compile Include="WClockSet.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -110,7 +116,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="Samples\ColorPickerDialog.xaml">
+    <Page Include="ColorPicker\ColorPickerDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
