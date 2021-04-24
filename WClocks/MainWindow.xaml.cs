@@ -68,24 +68,31 @@ namespace WClocks
         readonly DispatcherTimer mainTimer = new DispatcherTimer();
         public static readonly string UserAppFolder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
         public static readonly string ApplicationFolder = System.IO.Path.Combine(UserAppFolder, APP_NAME);
-        static string config = System.IO.Path.Combine(ApplicationFolder, "wclock.xml");
 
         double DefaultWindowWidth => 250f;
         double DefaultWindowHeight => 270f;
         int IconsHeaderHeight => 20;
 
+
+        private string GetConfigPath()
+        {
+            string fileName = "wclock.xml";
+#if DEBUG
+            return fileName;
+#endif
+            return System.IO.Path.Combine(ApplicationFolder, "wclock.xml");
+        }
+
         private void LoadSettings()
         {
-            // Compatible for previous version
-            string configPath = System.IO.File.Exists(config) ? config : System.IO.Path.Combine(UserAppFolder, "wclock.xml");
+            string configPath = GetConfigPath();
             try
             {
-                settings = Serializer.SafeLoadFromXml<WClockSet>(config, null) ?? new WClockSet();
+                settings = Serializer.SafeLoadFromXml<WClockSet>(configPath, null) ?? new WClockSet();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Launch error\n\nError load config from\n{configPath}\n\nDetails: {ex.Message}", APP_NAME, MessageBoxButton.OK, MessageBoxImage.Error);
-                Logger.Error(ex.Message);
             }
 
             SetLocationOptions(settings.Location);
@@ -103,7 +110,8 @@ namespace WClocks
 
         private void SaveSettings()
         {
-            Serializer.SaveToXml(config, settings);
+            string configPath = GetConfigPath();
+            Serializer.SaveToXml(configPath, settings);
         }
 
         public MainWindow()
