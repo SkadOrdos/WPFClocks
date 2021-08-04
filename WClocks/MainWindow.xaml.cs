@@ -269,18 +269,18 @@ namespace WClocks
             menuItem.IsChecked = checkState;
         }
 
-        private string SetLocationOptions(string location)
+        private string SetLocationOptions(string newLocation)
         {
             // Find menu item by Tag, otherwise set Float window by default
-            string newLocation = FindMenuItem(clocksLocationMenu, location)?.Tag as String ?? Locations.Float;
-            SetMenuItemCheckState(clocksLocationMenu, (item) => String.Equals(item.Tag, newLocation));
+            string location = FindMenuItem(clocksLocationMenu, newLocation)?.Tag as String ?? Locations.Float;
+            SetMenuItemCheckState(clocksLocationMenu, (item) => String.Equals(item.Tag, location));
 
             this.Topmost = String.Equals(location, Locations.TopMost, StringComparison.OrdinalIgnoreCase);
             this.ShowInTaskbar = String.Equals(location, Locations.Float, StringComparison.OrdinalIgnoreCase);
             if (String.Equals(location, Locations.Desktop, StringComparison.OrdinalIgnoreCase))
                 WinExtern.SendWindowBack(Application.Current.MainWindow); // Place window at the back of screen
 
-            return newLocation;
+            return location;
         }
 
         private void MenuLocation_Click(object sender, RoutedEventArgs e)
@@ -301,27 +301,27 @@ namespace WClocks
             this.Top = newPosition.Y;
         }
 
-        private double GetSizedWindowHeight(int size) => Math.Round(DefaultWindowWidth * size / 100f + IconsHeaderHeight);
-        private double GetSizedWindowWidth(int size) => Math.Round(DefaultWindowWidth * size / 100f);
+        private double GetSizedWindowHeight(double scale) => Math.Round(DefaultWindowWidth * scale + IconsHeaderHeight);
+        private double GetSizedWindowWidth(double scale) => Math.Round(DefaultWindowWidth * scale);
 
-        private int SetSizeOptions(string size)
+        private int SetSizeOptions(string newSizeStr)
         {
-            double prevWidth = GetSizedWindowWidth(settings.Size);
-            double prevHeight = GetSizedWindowHeight(settings.Size);
+            double prevWidth = GetSizedWindowWidth(settings.GetSizeScale);
+            double prevHeight = GetSizedWindowHeight(settings.GetSizeScale);
 
             // Find menu item by Tag, otherwise set 100 window by default
-            string newSizeStr = FindMenuItem(clocksSizeMenu, size)?.Tag as String ?? "100";
-            SetMenuItemCheckState(clocksSizeMenu, (item) => String.Equals(item.Tag, newSizeStr));
-            int newSizeValue = Int32.Parse(newSizeStr);
-            GridScaleValue = newSizeValue / 100f;
+            string sizeStr = FindMenuItem(clocksSizeMenu, newSizeStr)?.Tag as String ?? "100";
+            SetMenuItemCheckState(clocksSizeMenu, (item) => String.Equals(item.Tag, sizeStr));
+            int size = Int32.Parse(sizeStr);
+            GridScaleValue = size / 100f;
 
             // Set window to previous center
-            this.Width = GetSizedWindowWidth(newSizeValue);
-            this.Height = GetSizedWindowHeight(newSizeValue);
+            this.Width = GetSizedWindowWidth(GridScaleValue);
+            this.Height = GetSizedWindowHeight(GridScaleValue);
             if (Math.Abs(prevWidth - this.Width) > Double.Epsilon) this.Left += (prevWidth - this.Width) / 2;
             if (Math.Abs(prevHeight - this.Height) > Double.Epsilon) this.Top += (prevHeight - this.Height) / 2;
 
-            return newSizeValue;
+            return size;
         }
 
         private void MenuSize_Click(object sender, RoutedEventArgs e)

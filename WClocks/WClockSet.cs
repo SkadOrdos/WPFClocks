@@ -78,6 +78,7 @@ namespace WClocks
 
         public int Size { get; set; } = 100;
 
+        public double GetSizeScale => Size / 100f;
 
         public WClockSet()
         {
