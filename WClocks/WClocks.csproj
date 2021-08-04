@@ -95,6 +95,7 @@
     </ApplicationDefinition>
     <Compile Include="other\AutorunManager.cs" />
     <Compile Include="other\Logger.cs" />
+    <Compile Include="other\ObjectArgs.cs" />
     <Compile Include="other\ResourceLoader.cs" />
     <Compile Include="other\WinExtern.cs" />
     <Compile Include="ColorPicker\ColorPicker.cs" />
@@ -102,6 +103,9 @@
       <DependentUpon>ColorPickerDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="ColorPicker\SupportingClasses.cs" />
+    <Compile Include="PositionWindow.xaml.cs">
+      <DependentUpon>PositionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WClockSet.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -118,6 +122,10 @@
     <Page Include="ColorPicker\ColorPickerDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PositionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\generic.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -143,7 +151,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="ClassDiagram1.cd" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -186,6 +193,13 @@
       <Isolated>False</Isolated>
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\arrow-gray.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="icons\arrow-position.png" />
+    <Resource Include="icons\arrow-x.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

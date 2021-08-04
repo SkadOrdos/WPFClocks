@@ -69,9 +69,9 @@ namespace WClocks
         public static readonly string UserAppFolder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
         public static readonly string ApplicationFolder = System.IO.Path.Combine(UserAppFolder, APP_NAME);
 
-        double DefaultWindowWidth => 250f;
-        double DefaultWindowHeight => 270f;
-        int IconsHeaderHeight => 20;
+        const double DefaultWindowWidth = 250f;
+        const double DefaultWindowHeight = DefaultWindowWidth + IconsHeaderHeight;
+        const int IconsHeaderHeight = 20;
 
 
         private string GetConfigPath()
@@ -161,7 +161,7 @@ namespace WClocks
 
         private void InitClockFace()
         {
-            int clockSideLenght = Convert.ToInt32(Width);
+            int clockSideLenght = Convert.ToInt32(DefaultWindowWidth);
             int xCenter = clockSideLenght / 2; // Center of clocks grid
             int yCenter = clockSideLenght / 2; // Center of clocks grid
             int yStartPoint = clockSideLenght / 25; // 1/25 of side lenght
@@ -247,29 +247,40 @@ namespace WClocks
                 .FirstOrDefault(mi => String.Equals(mi.Tag as String, tag, StringComparison.OrdinalIgnoreCase));
         }
 
-        private void SetMenuCheckState(MenuItem menuItem)
+        private void SetMenuItemCheckState(MenuItem ownerMenu, Func<MenuItem, bool> predicate, bool checkState = true)
+        {
+            foreach (MenuItem item in ownerMenu.Items)
+            {
+                // Reset all items
+                item.IsChecked = !checkState;
+                if (predicate(item))
+                    item.IsChecked = checkState;
+            }
+        }
+
+        private void SetMenuItemCheckState(MenuItem menuItem, bool checkState = true)
         {
             var ownerMenu = (MenuItem)menuItem.Parent;
             foreach (MenuItem item in ownerMenu.Items)
             {
                 // Reset all items
-                item.IsChecked = false;
+                item.IsChecked = !checkState;
             }
-            menuItem.IsChecked = true;
+            menuItem.IsChecked = checkState;
         }
 
         private string SetLocationOptions(string location)
         {
             // Find menu item by Tag, otherwise set Float window by default
-            var foundMenu = FindMenuItem(clocksLocationMenu, location) ?? itemLocationFloat;
-            SetMenuCheckState(foundMenu);
+            string newLocation = FindMenuItem(clocksLocationMenu, location)?.Tag as String ?? Locations.Float;
+            SetMenuItemCheckState(clocksLocationMenu, (item) => String.Equals(item.Tag, newLocation));
 
             this.Topmost = String.Equals(location, Locations.TopMost, StringComparison.OrdinalIgnoreCase);
             this.ShowInTaskbar = String.Equals(location, Locations.Float, StringComparison.OrdinalIgnoreCase);
             if (String.Equals(location, Locations.Desktop, StringComparison.OrdinalIgnoreCase))
                 WinExtern.SendWindowBack(Application.Current.MainWindow); // Place window at the back of screen
 
-            return foundMenu.Tag as String;
+            return newLocation;
         }
 
         private void MenuLocation_Click(object sender, RoutedEventArgs e)
@@ -280,18 +291,37 @@ namespace WClocks
         }
 
 
+        private void MenuPosition_Click(object sender, RoutedEventArgs e)
+        {
+            var positionScreen = new PositionWindow(this);
+            positionScreen.ShowDialog();
+            Point newPosition = (Point)positionScreen.GetPositionArgs().Object;
+
+            this.Left = newPosition.X;
+            this.Top = newPosition.Y;
+        }
+
+        private double GetSizedWindowHeight(int size) => Math.Round(DefaultWindowWidth * size / 100f + IconsHeaderHeight);
+        private double GetSizedWindowWidth(int size) => Math.Round(DefaultWindowWidth * size / 100f);
+
         private int SetSizeOptions(string size)
         {
+            double prevWidth = GetSizedWindowWidth(settings.Size);
+            double prevHeight = GetSizedWindowHeight(settings.Size);
+
             // Find menu item by Tag, otherwise set 100 window by default
-            var foundMenu = FindMenuItem(clocksSizeMenu, size) ?? itemSizeDefault;
-            SetMenuCheckState(foundMenu);
-            int sizeValue = Int32.Parse(foundMenu.Tag as String);
+            string newSizeStr = FindMenuItem(clocksSizeMenu, size)?.Tag as String ?? "100";
+            SetMenuItemCheckState(clocksSizeMenu, (item) => String.Equals(item.Tag, newSizeStr));
+            int newSizeValue = Int32.Parse(newSizeStr);
+            GridScaleValue = newSizeValue / 100f;
 
-            GridScaleValue = sizeValue / 100f;
-            this.Width = DefaultWindowWidth * GridScaleValue;
-            this.Height = DefaultWindowWidth * GridScaleValue + IconsHeaderHeight;
+            // Set window to previous center
+            this.Width = GetSizedWindowWidth(newSizeValue);
+            this.Height = GetSizedWindowHeight(newSizeValue);
+            if (Math.Abs(prevWidth - this.Width) > Double.Epsilon) this.Left += (prevWidth - this.Width) / 2;
+            if (Math.Abs(prevHeight - this.Height) > Double.Epsilon) this.Top += (prevHeight - this.Height) / 2;
 
-            return sizeValue;
+            return newSizeValue;
         }
 
         private void MenuSize_Click(object sender, RoutedEventArgs e)
@@ -382,5 +412,6 @@ namespace WClocks
         }
 
         #endregion
+
     }
 }
