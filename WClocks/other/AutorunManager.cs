@@ -84,5 +84,11 @@ namespace WClocks
             }
             catch (Exception ex) { }
         }
+
+        public void SetAutorun(bool autorun)
+        {
+            if (autorun) EnableAutorun();
+            else DisableAutorun();
+        }
     }
 }

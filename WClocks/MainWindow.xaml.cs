@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -152,9 +151,9 @@ namespace WClocks
         private void InitClock()
         {
             InitClockFace();
-            UpdateClock();
+            UpdateClock(true);
 
-            mainTimer.Interval = TimeSpan.FromMilliseconds(100);
+            mainTimer.Interval = TimeSpan.FromMilliseconds(125);
             mainTimer.Tick += MainTimer_Tick;
             mainTimer.Start();
         }
@@ -200,10 +199,10 @@ namespace WClocks
         }
 
         DateTime lastTime;
-        private void UpdateClock()
+        private void UpdateClock(bool force = false)
         {
             DateTime dt = DateTime.Now;
-            if (dt.Second == lastTime.Second)
+            if (dt.Second == lastTime.Second && !force)
                 return;
 
             AngleSecond = 6 * (dt.Second);
@@ -220,18 +219,22 @@ namespace WClocks
             UpdateShadowLine(ShadowLineHour, LineHour);
         }
 
-        int shadowOffset = 3;
+        const int ShadowOffset = 3;
         private void UpdateShadowLine(Line shadowLine, Line parent)
         {
-            int screenPosition = (this.Left > SystemParameters.WorkArea.Width / 2) ? 1 : -1;
+            int middleScreenX = Convert.ToInt32(SystemParameters.WorkArea.Width / 2);
+            int screenPosition = (this.Left > middleScreenX) ? 1 : -1;
             // 3 = Shadow offset from arrow, 180 - half of circle in degrees, source of light on the top of screen
+            double horizontalShadowOffset = ShadowOffset * (Math.Abs(this.Left - middleScreenX) / middleScreenX);
             double parentAngle = Convert.ToDouble((parent.RenderTransform as RotateTransform)?.Angle);
-            double shadowLineOffset = shadowOffset * Math.Round(Math.Sin(parentAngle / 180 * Math.PI), 6);
+            double displacementFactor = Math.Round(Math.Sin(parentAngle / 180 * Math.PI), 6);
+            double shadowLineXOffset = ShadowOffset * displacementFactor;
+            double shadowLineYOffset = horizontalShadowOffset * displacementFactor;
 
-            shadowLine.X1 = parent.X1 + shadowLineOffset;
-            shadowLine.Y1 = parent.Y1 - shadowLineOffset * screenPosition;
-            shadowLine.X2 = parent.X2 + shadowLineOffset;
-            shadowLine.Y2 = parent.Y2 - shadowLineOffset * screenPosition;
+            shadowLine.X1 = parent.X1 + shadowLineXOffset;
+            shadowLine.Y1 = parent.Y1 - shadowLineYOffset * screenPosition;
+            shadowLine.X2 = parent.X2 + shadowLineXOffset;
+            shadowLine.Y2 = parent.Y2 - shadowLineYOffset * screenPosition;
         }
 
         #region// Menu
@@ -247,13 +250,13 @@ namespace WClocks
                 .FirstOrDefault(mi => String.Equals(mi.Tag as String, tag, StringComparison.OrdinalIgnoreCase));
         }
 
-        private void SetMenuItemCheckState(MenuItem ownerMenu, Func<MenuItem, bool> predicate, bool checkState = true)
+        private void SetMenuItemCheckState(MenuItem ownerMenu, string itemTag, bool checkState = true)
         {
             foreach (MenuItem item in ownerMenu.Items)
             {
                 // Reset all items
                 item.IsChecked = !checkState;
-                if (predicate(item))
+                if (String.Equals(item.Tag?.ToString(), itemTag))
                     item.IsChecked = checkState;
             }
         }
@@ -273,7 +276,7 @@ namespace WClocks
         {
             // Find menu item by Tag, otherwise set Float window by default
             string location = FindMenuItem(clocksLocationMenu, newLocation)?.Tag as String ?? Locations.Float;
-            SetMenuItemCheckState(clocksLocationMenu, (item) => String.Equals(item.Tag, location));
+            SetMenuItemCheckState(clocksLocationMenu, location);
 
             this.Topmost = String.Equals(location, Locations.TopMost, StringComparison.OrdinalIgnoreCase);
             this.ShowInTaskbar = String.Equals(location, Locations.Float, StringComparison.OrdinalIgnoreCase);
@@ -311,7 +314,7 @@ namespace WClocks
 
             // Find menu item by Tag, otherwise set 100 window by default
             string sizeStr = FindMenuItem(clocksSizeMenu, newSizeStr)?.Tag as String ?? "100";
-            SetMenuItemCheckState(clocksSizeMenu, (item) => String.Equals(item.Tag, sizeStr));
+            SetMenuItemCheckState(clocksSizeMenu, sizeStr);
             int size = Int32.Parse(sizeStr);
             GridScaleValue = size / 100f;
 
@@ -373,16 +376,15 @@ namespace WClocks
         private void MenuAutorun_Click(object sender, RoutedEventArgs e)
         {
             var menuItem = (MenuItem)sender;
-            bool autorun = autorunManager.IsAutorunEnabled;
-            if (autorun) autorunManager.DisableAutorun();
-            else autorunManager.EnableAutorun();
+            bool newAutorunStatus = !(autorunManager.IsAutorunEnabled);
+            autorunManager.SetAutorun(newAutorunStatus);
 
-            menuItem.IsChecked = !(autorun);
+            menuItem.IsChecked = newAutorunStatus;
         }
 
         private void MenuRefresh_Click(object sender, RoutedEventArgs e)
         {
-            UpdateClock();
+            UpdateClock(true);
             this.UpdateLayout();
         }
 
