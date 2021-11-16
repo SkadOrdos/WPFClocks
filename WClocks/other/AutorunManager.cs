@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 
 namespace WClocks
 {
@@ -10,10 +9,11 @@ namespace WClocks
         readonly string applicationName;
         readonly string appFileName;
         readonly string appPath;
-        public AutorunManager(string aName, string aFolder)
+
+        public AutorunManager(string appName, string aFolder)
         {
-            applicationName = aName;
-            appFileName = aName + ".exe";
+            applicationName = appName;
+            appFileName = appName + ".exe";
             appPath = Path.Combine(aFolder, appFileName);
             InstallApp(appPath);
         }

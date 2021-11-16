@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -79,7 +80,7 @@ namespace WClocks
 #if DEBUG
             return fileName;
 #endif
-            return System.IO.Path.Combine(ApplicationFolder, "wclock.xml");
+            return System.IO.Path.Combine(ApplicationFolder, fileName);
         }
 
         private void LoadSettings()
@@ -110,7 +111,14 @@ namespace WClocks
         private void SaveSettings()
         {
             string configPath = GetConfigPath();
-            Serializer.SaveToXml(configPath, settings);
+            try
+            {
+                Serializer.SaveToXml(configPath, settings);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex);
+            }
         }
 
         public MainWindow()
@@ -224,12 +232,12 @@ namespace WClocks
         {
             int middleScreenX = Convert.ToInt32(SystemParameters.WorkArea.Width / 2);
             int screenPosition = (this.Left > middleScreenX) ? 1 : -1;
+            double horizontalOffset = ShadowOffset * (Math.Abs(this.Left - middleScreenX) / middleScreenX);
             // 3 = Shadow offset from arrow, 180 - half of circle in degrees, source of light on the top of screen
-            double horizontalShadowOffset = ShadowOffset * (Math.Abs(this.Left - middleScreenX) / middleScreenX);
             double parentAngle = Convert.ToDouble((parent.RenderTransform as RotateTransform)?.Angle);
             double displacementFactor = Math.Round(Math.Sin(parentAngle / 180 * Math.PI), 6);
             double shadowLineXOffset = ShadowOffset * displacementFactor;
-            double shadowLineYOffset = horizontalShadowOffset * displacementFactor;
+            double shadowLineYOffset = horizontalOffset * displacementFactor;
 
             shadowLine.X1 = parent.X1 + shadowLineXOffset;
             shadowLine.Y1 = parent.Y1 - shadowLineYOffset * screenPosition;

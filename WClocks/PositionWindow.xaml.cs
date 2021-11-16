@@ -2,12 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
@@ -34,8 +30,8 @@ namespace WClocks
 
         private void FillButtons()
         {
-            int gridSize = 3;
-            for (int i = 1; i <= gridSize; i++)
+            int gridLength = 3;
+            for (int i = 1; i <= gridLength; i++)
             {
                 positionGrid.ColumnDefinitions.Add(new ColumnDefinition());
                 positionGrid.RowDefinitions.Add(new RowDefinition());
@@ -43,12 +39,12 @@ namespace WClocks
 
             // Rotate image from top left by clock arrow
             var rotateSideMap = new[] { -1, 0, 1 };
-            int gridLenght = gridSize * gridSize;
-            int centerIndex = Convert.ToInt32(gridLenght / 2);
-            for (int i = 0; i < gridLenght; i++)
+            int gridSize = gridLength * gridLength;
+            int centerIndex = Convert.ToInt32(gridSize / 2);
+            for (int i = 0; i < gridSize; i++)
             {
-                int colIndex = i % gridSize;
-                int rowIndex = (int)(i / gridSize);
+                int colIndex = i % gridLength;
+                int rowIndex = (int)(i / gridLength);
 
                 Button button = new Button();
                 button.Background = this.Background;
