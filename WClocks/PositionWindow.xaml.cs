@@ -10,6 +10,17 @@ using System.Windows.Shapes;
 
 namespace WClocks
 {
+    public class PointArgs : EventArgs
+    {
+        public Point NewPoint;
+
+        public PointArgs(Point p)
+        {
+            this.NewPoint = p;
+        }
+    }
+
+
     /// <summary>
     /// Interaction logic for PositionWindow.xaml
     /// </summary>
@@ -95,6 +106,7 @@ namespace WClocks
             return stackPnl;
         }
 
+        public event EventHandler<PointArgs> SetPosition = delegate { };
         private void PositionButton_Click(object sender, RoutedEventArgs e)
         {
             Rect displayArea = System.Windows.SystemParameters.WorkArea;
@@ -103,9 +115,10 @@ namespace WClocks
             // Convert button array index to screen position like TopLeft, TopCenter, TopRight...
             double newX = selectedPosition.Y * (displayArea.Width / 2) - selectedPosition.Y * (owner.Width / 2);
             double newY = selectedPosition.X * (displayArea.Height / 2) - selectedPosition.X * (owner.Height / 2);
+
             // Apply powition to owner window
-            owner.Left = (int)newX;
-            owner.Top = (int)newY;
+            Point newPosition = new Point((int)(Math.Round(newX)), (int)Math.Round(newY));
+            SetPosition(this, new PointArgs(newPosition));
         }
 
         private void buttonApply_Click(object sender, RoutedEventArgs e)

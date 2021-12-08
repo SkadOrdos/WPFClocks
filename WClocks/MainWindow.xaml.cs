@@ -126,7 +126,6 @@ namespace WClocks
             InitializeComponent();
             DataContext = this;
             LoadSettings();
-            InitClock();
 
             autorunManager = new AutorunManager(APP_NAME, ApplicationFolder);
 
@@ -138,6 +137,8 @@ namespace WClocks
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             WinExtern.DisableWindowSwitcher(Application.Current.MainWindow);
+            // Init timer only after load window
+            InitClock();
         }
 
         private void MainWindow_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -231,8 +232,8 @@ namespace WClocks
         private void UpdateShadowLine(Line shadowLine, Line parent)
         {
             int middleScreenX = Convert.ToInt32(SystemParameters.WorkArea.Width / 2);
-            int screenPosition = (this.Left > middleScreenX) ? 1 : -1;
-            double horizontalOffset = ShadowOffset * (Math.Abs(this.Left - middleScreenX) / middleScreenX);
+            int screenPosition = (ConvertNaN(this.Left) > middleScreenX) ? 1 : -1;
+            double horizontalOffset = ShadowOffset * (Math.Abs(ConvertNaN(this.Left) - middleScreenX) / middleScreenX);
             // 3 = Shadow offset from arrow, 180 - half of circle in degrees, source of light on the top of screen
             double parentAngle = Convert.ToDouble((parent.RenderTransform as RotateTransform)?.Angle);
             double displacementFactor = Math.Round(Math.Sin(parentAngle / 180 * Math.PI), 6);
@@ -305,11 +306,18 @@ namespace WClocks
         private void MenuPosition_Click(object sender, RoutedEventArgs e)
         {
             var positionScreen = new PositionWindow(this);
-            positionScreen.ShowDialog();
+            positionScreen.SetPosition += (ps, pArgs) =>
+            {
+                this.Left = pArgs.NewPoint.X;
+                this.Top = pArgs.NewPoint.Y;
+            };
+
+            bool isSet = (positionScreen.ShowDialog() == true);
             Point newPosition = (Point)positionScreen.GetPositionArgs().Object;
 
             this.Left = newPosition.X;
             this.Top = newPosition.Y;
+            if (isSet) SaveSettings();
         }
 
         private double GetSizedWindowHeight(double scale) => Math.Round(DefaultWindowWidth * scale + IconsHeaderHeight);
@@ -423,5 +431,9 @@ namespace WClocks
 
         #endregion
 
+        private double ConvertNaN(double value)
+        {
+            return !Double.IsNaN(value) ? value : 0.0;
+        }
     }
 }
