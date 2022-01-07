@@ -78,7 +78,7 @@ namespace WClocks
         {
             string fileName = "wclock.xml";
 #if DEBUG
-            return fileName;
+            //return fileName;
 #endif
             return System.IO.Path.Combine(ApplicationFolder, fileName);
         }
@@ -102,8 +102,7 @@ namespace WClocks
             var screenRect = new Rect(0, 0, SystemParameters.WorkArea.Width - this.Width, SystemParameters.WorkArea.Height - this.Height);
             if (screenRect.Contains(settings.Position))
             {
-                this.Left = settings.Position.X;
-                this.Top = settings.Position.Y;
+                SetWindowPosition(settings.Position);
             }
             else this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
         }
@@ -160,11 +159,12 @@ namespace WClocks
         private void InitClock()
         {
             InitClockFace();
-            UpdateClock(true);
 
             mainTimer.Interval = TimeSpan.FromMilliseconds(125);
             mainTimer.Tick += MainTimer_Tick;
             mainTimer.Start();
+
+            UpdateClock(true);
         }
 
         private void InitClockFace()
@@ -214,6 +214,10 @@ namespace WClocks
             if (dt.Second == lastTime.Second && !force)
                 return;
 
+            // 360 degrees in circle / 60 seconds - 60 parts in clock face * 1000 ms / TimerInterval
+            //double arcCoef = 360 / (60 * 1000 / mainTimer.Interval.TotalMilliseconds);
+            //double millisecondShift = arcCoef * dt.Millisecond / mainTimer.Interval.TotalMilliseconds;
+
             AngleSecond = 6 * (dt.Second);
             AngleMinute = 6 * dt.Minute + AngleSecond / 60;
             AngleHour = 30 * (dt.Hour % 12) + AngleMinute / 12;
@@ -231,11 +235,11 @@ namespace WClocks
         const int ShadowOffset = 3;
         private void UpdateShadowLine(Line shadowLine, Line parent)
         {
-            int middleScreenX = Convert.ToInt32(SystemParameters.WorkArea.Width / 2);
-            int screenPosition = (ConvertNaN(this.Left) > middleScreenX) ? 1 : -1;
+            double middleScreenX = Convert.ToDouble(SystemParameters.WorkArea.Width / 2);
+            int screenPosition = ConvertNaN(this.Left) < middleScreenX ? -1 : 1;
             double horizontalOffset = ShadowOffset * (Math.Abs(ConvertNaN(this.Left) - middleScreenX) / middleScreenX);
             // 3 = Shadow offset from arrow, 180 - half of circle in degrees, source of light on the top of screen
-            double parentAngle = Convert.ToDouble((parent.RenderTransform as RotateTransform)?.Angle);
+            double parentAngle = ConvertNaN((parent.RenderTransform as RotateTransform)?.Angle);
             double displacementFactor = Math.Round(Math.Sin(parentAngle / 180 * Math.PI), 6);
             double shadowLineXOffset = ShadowOffset * displacementFactor;
             double shadowLineYOffset = horizontalOffset * displacementFactor;
@@ -244,6 +248,13 @@ namespace WClocks
             shadowLine.Y1 = parent.Y1 - shadowLineYOffset * screenPosition;
             shadowLine.X2 = parent.X2 + shadowLineXOffset;
             shadowLine.Y2 = parent.Y2 - shadowLineYOffset * screenPosition;
+        }
+
+        private Point SetWindowPosition(Point newPosition)
+        {
+            this.Left = newPosition.X;
+            this.Top = newPosition.Y;
+            return newPosition;
         }
 
         #region// Menu
@@ -306,18 +317,17 @@ namespace WClocks
         private void MenuPosition_Click(object sender, RoutedEventArgs e)
         {
             var positionScreen = new PositionWindow(this);
-            positionScreen.SetPosition += (ps, pArgs) =>
-            {
-                this.Left = pArgs.NewPoint.X;
-                this.Top = pArgs.NewPoint.Y;
-            };
+            positionScreen.SetPosition += (ps, pArgs) => { SetWindowPosition(pArgs.NewPoint); };
 
-            bool isSet = (positionScreen.ShowDialog() == true);
+            bool okResult = (positionScreen.ShowDialog() == true);
             Point newPosition = (Point)positionScreen.GetPositionArgs().Object;
+            SetWindowPosition(newPosition);
 
-            this.Left = newPosition.X;
-            this.Top = newPosition.Y;
-            if (isSet) SaveSettings();
+            if (okResult)
+            {
+                settings.Position = newPosition;
+                SaveSettings();
+            }
         }
 
         private double GetSizedWindowHeight(double scale) => Math.Round(DefaultWindowWidth * scale + IconsHeaderHeight);
@@ -431,9 +441,9 @@ namespace WClocks
 
         #endregion
 
-        private double ConvertNaN(double value)
+        private double ConvertNaN(double? dVal)
         {
-            return !Double.IsNaN(value) ? value : 0.0;
+            return (dVal != null && !Double.IsNaN(dVal.Value)) ? dVal.Value : 0.0;
         }
     }
 }

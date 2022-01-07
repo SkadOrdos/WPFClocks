@@ -133,11 +133,11 @@ namespace WClocks
             this.Close();
         }
 
-        public ObjectArgs GetPositionArgs()
+        public ObjectArgs<Point> GetPositionArgs()
         {
             if (this.DialogResult == true)
-                return new ObjectArgs(new Point(owner.Left, owner.Top));
-            return new ObjectArgs(currentWindowPosition);
+                return new ObjectArgs<Point>(new Point(owner.Left, owner.Top));
+            return new ObjectArgs<Point>(currentWindowPosition);
         }
 
     }

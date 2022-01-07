@@ -1,16 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace WClocks
 {
-    public class ObjectArgs : EventArgs
+    public class ObjectArgs : ObjectArgs<object>
     {
-        public object Object { get; set; }
-
         public ObjectArgs(object obj)
+        {
+            this.Object = obj;
+        }
+    }
+
+
+    public class ObjectArgs<T> : EventArgs
+    {
+        public T Object { get; set; }
+
+        public ObjectArgs(T obj)
         {
             this.Object = obj;
         }
