@@ -64,6 +64,7 @@
                     <MenuItem Header="Autorun" x:Name="itemAutorun" Click="MenuAutorun_Click"></MenuItem>
                     <MenuItem Header="Refresh" Click="MenuRefresh_Click"></MenuItem>
                     <Separator></Separator>
+                    <MenuItem Header="About" Click="MenuAbout_Click"></MenuItem>
                     <MenuItem Header="Close" Click="MenuClose_Click"></MenuItem>
                 </ContextMenu>
             </Grid.ContextMenu>

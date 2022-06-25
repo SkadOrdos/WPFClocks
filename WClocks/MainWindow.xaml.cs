@@ -414,6 +414,15 @@ namespace WClocks
             this.UpdateLayout();
         }
 
+        private void MenuAbout_Click(object sender, RoutedEventArgs e)
+        {
+            var aboutScr = new About();
+            aboutScr.WindowStartupLocation = WindowStartupLocation.Manual;
+            aboutScr.Top = this.Top;
+            aboutScr.Left = this.Left;
+            aboutScr.ShowDialog();
+        }
+
         private void MenuClose_Click(object sender, RoutedEventArgs e)
         {
             this.Close();

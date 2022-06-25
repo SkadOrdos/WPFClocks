@@ -93,6 +93,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="About.xaml.cs">
+      <DependentUpon>About.xaml</DependentUpon>
+    </Compile>
     <Compile Include="other\AutorunManager.cs" />
     <Compile Include="other\Logger.cs" />
     <Compile Include="other\ObjectArgs.cs" />
@@ -107,6 +110,10 @@
       <DependentUpon>PositionWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="WClockSet.cs" />
+    <Page Include="About.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
