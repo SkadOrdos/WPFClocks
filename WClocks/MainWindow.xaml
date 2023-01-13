@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"        
         xmlns:WClocks="clr-namespace:WClocks"
+        xmlns:local="clr-namespace:WClocks"
         mc:Ignorable="d"
         Title="WClock" Name="MainClockWindow" Width="250" Height="270" AllowsTransparency="True" WindowStyle="None" Background="Transparent"
             ShowInTaskbar="False" Icon="icons/clock.ico" UseLayoutRounding="True" ResizeMode="NoResize">
@@ -12,7 +13,7 @@
             <RowDefinition Height="20"></RowDefinition>
             <RowDefinition Height="*"></RowDefinition>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0" Opacity="0.66">
+        <Grid x:Name="headerGrid" Grid.Row="0" Opacity="0.55">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="8*"></ColumnDefinition>
                 <ColumnDefinition Width="19"></ColumnDefinition>
@@ -34,8 +35,24 @@
                     <EllipseGeometry Center="5,9" RadiusX="13" RadiusY="13"/>
                 </Image.Clip>
             </Image>
+            <Grid.Resources>
+                <d:BooleanToVisibilityConverter x:Key="boolVisibilityConverter"></d:BooleanToVisibilityConverter>
+            </Grid.Resources>
+            <!--<Image.Style>
+                <Style TargetType="{x:Type Image}">
+                    <Style.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Visibility" Value="{Binding Path=IsMouseOver, ElementName=mainGrid, Converter={StaticResource boolVisibilityConverter}}"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>-->
         </Grid>
         <Grid x:Name="clocksGrid" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="213*"/>
+                <ColumnDefinition Width="37*"/>
+            </Grid.ColumnDefinitions>
             <Grid.LayoutTransform>
                 <ScaleTransform x:Name="ApplicationScaleTransform"
                         CenterX="0"
@@ -52,6 +69,7 @@
                     </MenuItem>
                     <MenuItem Header="Position" x:Name="itemPosition" Click="MenuPosition_Click"></MenuItem>
                     <Separator></Separator>
+                    <MenuItem Header="Show Header"  x:Name="itemShowHeader" Click="MenuShowHeader_Click"></MenuItem>
                     <MenuItem Header="Size" x:Name="clocksSizeMenu">
                         <MenuItem Header="50%" Click="MenuSize_Click" Tag="50"></MenuItem>
                         <MenuItem Header="75%" Click="MenuSize_Click" Tag="75"></MenuItem>
@@ -68,9 +86,9 @@
                     <MenuItem Header="Close" Click="MenuClose_Click"></MenuItem>
                 </ContextMenu>
             </Grid.ContextMenu>
-            <TextBlock x:Name="blockFirm" Foreground="White" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,125,0,0" 
+            <TextBlock x:Name="blockFirm" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="125,180,0,0" 
                        FontSize="14" FontStyle="Italic" FontFamily="Consolas"></TextBlock>
-            <Line Stroke="Black" StrokeThickness="2" X1="125" Y1="140" X2="125" Y2="60" x:Name="ShadowLineHour" RenderTransformOrigin="0.5,0.5" Opacity="0.25" Tag="ShadowLine" Panel.ZIndex="1">
+            <Line Stroke="Black" StrokeThickness="2" X1="125" Y1="140" X2="125" Y2="60" x:Name="ShadowLineHour" RenderTransformOrigin="0.5,0.5" Opacity="0.25" Tag="ShadowLine" Panel.ZIndex="1" Grid.ColumnSpan="2">
                 <Line.Effect>
                     <BlurEffect Radius="1"></BlurEffect>
                 </Line.Effect>
@@ -78,12 +96,12 @@
                     <RotateTransform Angle="{Binding Path=AngleHour}" x:Name="ShadowLineRotateHour" />
                 </Line.RenderTransform>
             </Line>
-            <Line Stroke="White" StrokeThickness="2" X1="125" Y1="140" X2="125" Y2="60" x:Name="LineHour" RenderTransformOrigin="0.5,0.5" Panel.ZIndex="2">
+            <Line Stroke="White" StrokeThickness="2" X1="125" Y1="140" X2="125" Y2="60" x:Name="LineHour" RenderTransformOrigin="0.5,0.5" Panel.ZIndex="2" Grid.ColumnSpan="2">
                 <Line.RenderTransform>
                     <RotateTransform Angle="{Binding Path=AngleHour}" x:Name="LineRotateHour" />
                 </Line.RenderTransform>
             </Line>
-            <Line Stroke="Black" StrokeThickness="2" X1="125" Y1="140" X2="125" Y2="20" x:Name="ShadowLineMinute" RenderTransformOrigin="0.5,0.5" Opacity="0.25" Tag="ShadowLine" Panel.ZIndex="3">
+            <Line Stroke="Black" StrokeThickness="2" X1="125" Y1="140" X2="125" Y2="20" x:Name="ShadowLineMinute" RenderTransformOrigin="0.5,0.5" Opacity="0.25" Tag="ShadowLine" Panel.ZIndex="3" Grid.ColumnSpan="2">
                 <Line.Effect>
                     <BlurEffect Radius="1"></BlurEffect>
                 </Line.Effect>
@@ -91,12 +109,12 @@
                     <RotateTransform Angle="{Binding Path=AngleMinute}" x:Name="ShadowLineRotateMinute" />
                 </Line.RenderTransform>
             </Line>
-            <Line Stroke="White" StrokeThickness="2" X1="125" Y1="140" X2="125" Y2="20" x:Name="LineMinute" RenderTransformOrigin="0.5,0.5" Panel.ZIndex="4">
+            <Line Stroke="White" StrokeThickness="2" X1="125" Y1="140" X2="125" Y2="20" x:Name="LineMinute" RenderTransformOrigin="0.5,0.5" Panel.ZIndex="4" Grid.ColumnSpan="2">
                 <Line.RenderTransform>
                     <RotateTransform Angle="{Binding Path=AngleMinute}" x:Name="LineRotateMinute" />
                 </Line.RenderTransform>
             </Line>
-            <Line Stroke="Black" StrokeThickness="1" X1="125" Y1="140" X2="125" Y2="20" x:Name="ShadowLineSecond" RenderTransformOrigin="0.5,0.5" Opacity="0.25" Tag="ShadowLine" Panel.ZIndex="5">
+            <Line Stroke="Black" StrokeThickness="1" X1="125" Y1="140" X2="125" Y2="20" x:Name="ShadowLineSecond" RenderTransformOrigin="0.5,0.5" Opacity="0.25" Tag="ShadowLine" Panel.ZIndex="5" Grid.ColumnSpan="2">
                 <Line.Effect>
                     <BlurEffect Radius="1"></BlurEffect>
                 </Line.Effect>
@@ -104,13 +122,13 @@
                     <RotateTransform Angle="{Binding Path=AngleSecond}" x:Name="ShadowLineRotateSecond" />
                 </Line.RenderTransform>
             </Line>
-            <Line Stroke="White" StrokeThickness="1" X1="125" Y1="140" X2="125" Y2="20" x:Name="LineSecond" RenderTransformOrigin="0.5,0.5" Panel.ZIndex="6">
+            <Line Stroke="White" StrokeThickness="1" X1="125" Y1="140" X2="125" Y2="20" x:Name="LineSecond" RenderTransformOrigin="0.5,0.5" Panel.ZIndex="6" Grid.ColumnSpan="2">
                 <Line.RenderTransform>
                     <RotateTransform Angle="{Binding Path=AngleSecond}" x:Name="LineRotateSecond" />
                 </Line.RenderTransform>
             </Line>
 
-            <Path Width="10" Height="10" Fill="White" x:Name="pathEllipse" StrokeThickness="2" Stretch="UniformToFill" Panel.ZIndex="10">
+            <Path Width="10" Height="10" Fill="White" x:Name="pathEllipse" StrokeThickness="2" Stretch="UniformToFill" Panel.ZIndex="10" Margin="120,120,83,120">
                 <Path.Data>
                     <EllipseGeometry Center="0,0" RadiusX="1" RadiusY="1" />
                 </Path.Data>

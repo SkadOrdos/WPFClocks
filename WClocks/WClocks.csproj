@@ -80,6 +80,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
@@ -96,6 +97,7 @@
     <Compile Include="About.xaml.cs">
       <DependentUpon>About.xaml</DependentUpon>
     </Compile>
+    <Compile Include="XBoolVisibilityConverter.cs" />
     <Compile Include="other\AutorunManager.cs" />
     <Compile Include="other\Logger.cs" />
     <Compile Include="other\ObjectArgs.cs" />

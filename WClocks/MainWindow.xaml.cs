@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -62,6 +63,17 @@ namespace WClocks
 
         #endregion
 
+        #region ShowHeader Dependency Property
+
+        public static readonly DependencyProperty ShowHeaderProperty = DependencyProperty.Register("ShowHeader", typeof(bool), typeof(MainWindow), new UIPropertyMetadata(true));
+
+        public bool ShowHeader
+        {
+            get { return (bool)GetValue(ShowHeaderProperty); }
+            set { SetValue(ShowHeaderProperty, value); }
+        }
+
+        #endregion
 
         private WClockSet settings;
         readonly AutorunManager autorunManager;
@@ -99,6 +111,8 @@ namespace WClocks
             SetSizeOptions(settings.Size.ToString());
             SetShapeColor(settings.FaceColor.CurrentColor);
 
+            headerGrid.Visibility = new XBoolVisibilityConverter().Convert(settings.ShowHeader);
+
             var screenRect = new Rect(0, 0, SystemParameters.WorkArea.Width - this.Width, SystemParameters.WorkArea.Height - this.Height);
             if (screenRect.Contains(settings.Position))
             {
@@ -109,9 +123,15 @@ namespace WClocks
 
         private void SaveSettings()
         {
+            UpdateSettings(sett => { });
+        }
+
+        private void UpdateSettings(Action<WClockSet> updateSettings)
+        {
             string configPath = GetConfigPath();
             try
             {
+                updateSettings?.Invoke(settings);
                 Serializer.SaveToXml(configPath, settings);
             }
             catch (Exception ex)
@@ -129,6 +149,7 @@ namespace WClocks
             autorunManager = new AutorunManager(APP_NAME, ApplicationFolder);
 
             this.MouseLeftButtonDown += MainWindow_MouseLeftButtonDown;
+            this.MouseLeftButtonUp += MainWindow_MouseLeftButtonUp;
             this.Loaded += MainWindow_Loaded;
             this.Closed += MainWindow_Closed;
         }
@@ -146,9 +167,16 @@ namespace WClocks
                 return;
 
             this.DragMove();
+        }
+
+        private void MainWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
             // Update location
-            settings.Position = new Point(this.Left, this.Top);
-            SaveSettings();
+            settings.Position = new Point(Math.Max(0, Math.Min(this.Left, SystemParameters.WorkArea.Width - this.Width)),
+                Math.Max(0, Math.Min(this.Top, SystemParameters.WorkArea.Height - this.Height)));
+            this.Left = settings.Position.X;
+            this.Top = settings.Position.Y;
+            SetSizeOptions(settings.Size.ToString());
         }
 
         private void MainWindow_Closed(object sender, EventArgs e)
@@ -262,6 +290,7 @@ namespace WClocks
         private void Clocks_ContextMenuOpening(object sender, RoutedEventArgs e)
         {
             itemAutorun.IsChecked = autorunManager.IsAutorunEnabled;
+            itemShowHeader.IsChecked = this.ShowHeader = settings.ShowHeader;
         }
 
         private MenuItem FindMenuItem(MenuItem ownerMenu, string tag)
@@ -292,6 +321,15 @@ namespace WClocks
             menuItem.IsChecked = checkState;
         }
 
+
+        private void MenuShowHeader_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = (MenuItem)sender;
+            this.ShowHeader = settings.ShowHeader = !menuItem.IsChecked;
+            headerGrid.Visibility = new XBoolVisibilityConverter().Convert(settings.ShowHeader);
+            SaveSettings();
+        }
+
         private string SetLocationOptions(string newLocation)
         {
             // Find menu item by Tag, otherwise set Float window by default
@@ -309,8 +347,7 @@ namespace WClocks
         private void MenuLocation_Click(object sender, RoutedEventArgs e)
         {
             string validLocation = SetLocationOptions(((MenuItem)sender).Tag as String);
-            settings.Location = validLocation;
-            SaveSettings();
+            UpdateSettings(sett => sett.Location = validLocation);
         }
 
 
@@ -325,8 +362,7 @@ namespace WClocks
 
             if (okResult)
             {
-                settings.Position = newPosition;
-                SaveSettings();
+                UpdateSettings(sett => sett.Position = newPosition);
             }
         }
 
@@ -356,8 +392,7 @@ namespace WClocks
         private void MenuSize_Click(object sender, RoutedEventArgs e)
         {
             int sizeValue = SetSizeOptions(((MenuItem)sender).Tag as String);
-            settings.Size = sizeValue;
-            SaveSettings();
+            UpdateSettings(sett => sett.Size = sizeValue);
         }
 
 
@@ -385,8 +420,7 @@ namespace WClocks
                     shapeElement.Fill = shapeElement.Stroke = userColorBrush;
             }
 
-            settings.FaceColor.SetColor(mediaColor);
-            SaveSettings();
+            UpdateSettings(sett => sett.FaceColor.SetColor(mediaColor));
         }
 
         private void ColorDialog_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color> e)

@@ -80,6 +80,9 @@ namespace WClocks
 
         public double GetSizeScale => Size / 100f;
 
+        public bool ShowHeader { get; set; } = true;
+
+
         public WClockSet()
         {
             FaceColor = new ColorSet(Color.FromArgb(255, 230, 230, 230));
