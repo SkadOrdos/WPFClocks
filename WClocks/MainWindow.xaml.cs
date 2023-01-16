@@ -75,7 +75,6 @@ namespace WClocks
 
         #endregion
 
-        private WClockSet settings;
         readonly AutorunManager autorunManager;
         readonly DispatcherTimer mainTimer = new DispatcherTimer();
         public static readonly string UserAppFolder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
@@ -95,6 +94,7 @@ namespace WClocks
             return System.IO.Path.Combine(ApplicationFolder, fileName);
         }
 
+        private WClockSet settings;
         private void LoadSettings()
         {
             string configPath = GetConfigPath();
@@ -325,9 +325,9 @@ namespace WClocks
         private void MenuShowHeader_Click(object sender, RoutedEventArgs e)
         {
             var menuItem = (MenuItem)sender;
-            this.ShowHeader = settings.ShowHeader = !menuItem.IsChecked;
-            headerGrid.Visibility = new XBoolVisibilityConverter().Convert(settings.ShowHeader);
-            SaveSettings();
+            this.ShowHeader = !menuItem.IsChecked;
+            headerGrid.Visibility = new XBoolVisibilityConverter().Convert(this.ShowHeader);
+            UpdateSettings(sett => sett.ShowHeader = this.ShowHeader);
         }
 
         private string SetLocationOptions(string newLocation)
