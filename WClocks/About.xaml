@@ -14,7 +14,7 @@
             <ColumnDefinition Width="28*"></ColumnDefinition>
         </Grid.ColumnDefinitions>
         <Image Source="/icons/clock.ico" Stretch="Uniform" Margin="5,20,5,20"></Image>
-        <TextBlock x:Name="textAbout" Grid.Column="1"  Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="5,0,5,0">Version</TextBlock>
-        <Button x:Name="btnOK" Grid.Column="3" Margin="5,20,5,40" Click="btnOK_Click">OK</Button>
+        <TextBlock x:Name="textAbout" Grid.Column="1"  Grid.ColumnSpan="2" Margin="5,0,5,0" VerticalAlignment="Center">Version</TextBlock>
+        <Button x:Name="btnOK" Grid.Column="3" Margin="5,5,5,5" VerticalAlignment="Center" Click="btnOK_Click" Height="40">OK</Button>
     </Grid>
 </Window>
