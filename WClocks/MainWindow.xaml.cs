@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -123,10 +122,10 @@ namespace WClocks
 
         private void SaveSettings()
         {
-            UpdateSettings(sett => { });
+            UpdateSettings();
         }
 
-        private void UpdateSettings(Action<WClockSet> updateSettings)
+        private void UpdateSettings(Action<WClockSet> updateSettings = null)
         {
             string configPath = GetConfigPath();
             try
@@ -144,7 +143,6 @@ namespace WClocks
         {
             InitializeComponent();
             DataContext = this;
-            LoadSettings();
 
             autorunManager = new AutorunManager(APP_NAME, ApplicationFolder);
 
@@ -157,6 +155,8 @@ namespace WClocks
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             WinExtern.DisableWindowSwitcher(Application.Current.MainWindow);
+
+            LoadSettings();
             // Init timer only after load window
             InitClock();
         }
@@ -181,18 +181,24 @@ namespace WClocks
 
         private void MainWindow_Closed(object sender, EventArgs e)
         {
-            SaveSettings();
+        }
+
+        private void StartTimer()
+        {
+            mainTimer.Stop();
+            mainTimer.Interval = TimeSpan.FromMilliseconds(125);
+            mainTimer.Tick -= MainTimer_Tick;
+            mainTimer.Tick += MainTimer_Tick;
+            mainTimer.Start();
         }
 
         private void InitClock()
         {
             InitClockFace();
 
-            mainTimer.Interval = TimeSpan.FromMilliseconds(125);
-            mainTimer.Tick += MainTimer_Tick;
-            mainTimer.Start();
-
             UpdateClock(true);
+
+            StartTimer();
         }
 
         private void InitClockFace()
@@ -445,6 +451,7 @@ namespace WClocks
         private void MenuRefresh_Click(object sender, RoutedEventArgs e)
         {
             UpdateClock(true);
+            StartTimer();
             this.UpdateLayout();
         }
 

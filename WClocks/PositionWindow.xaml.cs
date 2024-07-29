@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace WClocks
 {
@@ -139,6 +135,5 @@ namespace WClocks
                 return new ObjectArgs<Point>(new Point(owner.Left, owner.Top));
             return new ObjectArgs<Point>(currentWindowPosition);
         }
-
     }
 }
