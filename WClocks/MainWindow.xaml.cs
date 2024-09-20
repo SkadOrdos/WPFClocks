@@ -172,8 +172,8 @@ namespace WClocks
         private void MainWindow_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             // Update location
-            settings.Position = new Point(Math.Max(0, Math.Min(this.Left, SystemParameters.WorkArea.Width - this.Width)),
-                Math.Max(0, Math.Min(this.Top, SystemParameters.WorkArea.Height - this.Height)));
+            settings.Position = new Point(Math.Max(0, Math.Min(this.Left, (int)SystemParameters.WorkArea.Width - this.Width)),
+                Math.Max(0, Math.Min(this.Top, (int)SystemParameters.WorkArea.Height - this.Height)));
             this.Left = settings.Position.X;
             this.Top = settings.Position.Y;
             SetSizeOptions(settings.Size.ToString());
@@ -286,8 +286,8 @@ namespace WClocks
 
         private Point SetWindowPosition(Point newPosition)
         {
-            this.Left = newPosition.X;
-            this.Top = newPosition.Y;
+            this.Left = (int)newPosition.X; // Truncate float part
+            this.Top = (int)newPosition.Y; // Truncate float part
             return newPosition;
         }
 
