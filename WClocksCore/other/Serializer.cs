@@ -134,6 +134,7 @@ namespace WClocks
         public static T LoadFromAssemblyXml<T>(String path, String mark, Action<String> warnDelegate = null)
         {
             string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (String.IsNullOrEmpty(assemblyPath)) assemblyPath = AppContext.BaseDirectory;
             return LoadFromXml<T>(Path.Combine(assemblyPath, path));
         }
 
@@ -167,6 +168,7 @@ namespace WClocks
         public static T SafeLoadFromAssemblyXml<T>(String path, String mark, Action<String> warnDelegate = null)
         {
             string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            if (String.IsNullOrEmpty(assemblyPath)) assemblyPath = AppContext.BaseDirectory;
             return SafeLoadFromXml<T>(Path.Combine(assemblyPath, path), mark, warnDelegate);
         }
     }

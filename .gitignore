@@ -5,8 +5,8 @@
 /.vs
 /WClocks/obj
 /WClocks/bin
-/ColorPickerLib/obj/Release
-/ColorPickerLib/bin/Release
+/ColorPickerLib/bin
+/ColorPickerLib/obj
 /packages
 /WClocksCore/bin
 /WClocksCore/obj

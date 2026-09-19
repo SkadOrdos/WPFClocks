@@ -27,7 +27,7 @@ namespace WClocks
                     File.GetLastWriteTime(installPath) < File.GetLastWriteTime(assemblyPath))
                     File.Copy(assemblyPath, installPath, true);
             }
-            catch (Exception ex) { }
+            catch (Exception) { }
         }
 
         private string GetAutorunPath(string fileName, string fileExt = ".lnk")
@@ -74,14 +74,14 @@ namespace WClocks
                 string autorunFileLink = GetAutorunPath(applicationName);
                 if (File.Exists(autorunFileLink)) File.Delete(autorunFileLink);
             }
-            catch (Exception ex) { }
+            catch (Exception) { }
 
             try
             {
                 string autorunFileExe = GetAutorunPath(applicationName, ".exe");
                 if (File.Exists(autorunFileExe)) File.Delete(autorunFileExe);
             }
-            catch (Exception ex) { }
+            catch (Exception) { }
         }
     }
 }

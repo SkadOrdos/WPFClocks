@@ -333,7 +333,6 @@ namespace Samples.ColorPicker
 
         protected virtual void OnAChanged(byte newValue)
         {
-
             m_color.A = newValue;
             SetValue(ScAProperty, m_color.ScA);
             SetValue(SelectedColorProperty, m_color);
@@ -364,7 +363,6 @@ namespace Samples.ColorPicker
 
         protected virtual void OnGChanged(byte newValue)
         {
-
             m_color.G = newValue;
             SetValue(ScGProperty, m_color.ScG);
             SetValue(SelectedColorProperty, m_color);
@@ -412,7 +410,6 @@ namespace Samples.ColorPicker
         {
             ColorPicker c = (ColorPicker)d;
             c.OnScRChanged((float)e.NewValue);
-
         }
 
         protected virtual void OnScRChanged(float newValue)
@@ -436,7 +433,6 @@ namespace Samples.ColorPicker
 
         protected virtual void OnScGChanged(float newValue)
         {
-
             if (shouldFindPoint)
             {
                 m_color.ScG = newValue;
@@ -477,12 +473,9 @@ namespace Samples.ColorPicker
 
             try
             {
-
                 if (shouldFindPoint)
                 {
-
                     m_color = (Color)ColorConverter.ConvertFromString(newValue);
-
                 }
 
                 SetValue(AProperty, m_color.A);
@@ -496,12 +489,10 @@ namespace Samples.ColorPicker
                     updateMarkerPosition(m_color);
                 }
             }
-            catch (FormatException fException)
+            catch (FormatException)
             {
-
                 SetValue(HexadecimalStringProperty, oldValue);
             }
-
         }
 
         private static void selectedColor_changed(DependencyObject d,
@@ -513,7 +504,6 @@ namespace Samples.ColorPicker
 
         protected virtual void OnSelectedColorChanged(Color oldColor, Color newColor)
         {
-
             RoutedPropertyChangedEventArgs<Color> newEventArgs =
                 new RoutedPropertyChangedEventArgs<Color>(oldColor, newColor);
             newEventArgs.RoutedEvent = ColorPicker.SelectedColorChangedEvent;
@@ -528,7 +518,6 @@ namespace Samples.ColorPicker
 
         protected override void OnTemplateChanged(ControlTemplate oldTemplate, ControlTemplate newTemplate)
         {
-
             templateApplied = false;
             if (oldTemplate != null)
             {
@@ -540,47 +529,39 @@ namespace Samples.ColorPicker
                 m_ColorMarker = null;
                 m_ColorSlider = null;
             }
+
             base.OnTemplateChanged(oldTemplate, newTemplate);
         }
 
 
-        private void BaseColorChanged(
-            object sender,
+        private void BaseColorChanged(object sender,
             RoutedPropertyChangedEventArgs<Double> e)
         {
-
             if (m_ColorPosition != null)
             {
 
                 determineColor((Point)m_ColorPosition);
             }
-
         }
 
         private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-
             Point p = e.GetPosition(m_ColorDetail);
             updateMarkerPosition(p);
         }
 
         private void OnMouseMove(object sender, MouseEventArgs e)
         {
-
-
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-
                 Point p = e.GetPosition(m_ColorDetail);
                 updateMarkerPosition(p);
                 Mouse.Synchronize();
-
             }
         }
 
         private void ColorDetailSizeChanged(object sender, SizeChangedEventArgs args)
         {
-
             if (args.PreviousSize != Size.Empty &&
                 args.PreviousSize.Width != 0 && args.PreviousSize.Height != 0)
             {
@@ -613,7 +594,6 @@ namespace Samples.ColorPicker
                 SetValue(BProperty, m_color.B);
                 updateMarkerPosition(theColor);
             }
-
         }
 
         private void updateMarkerPosition(Point p)
@@ -647,7 +627,6 @@ namespace Samples.ColorPicker
 
         private void determineColor(Point p)
         {
-
             HsvColor hsv = new HsvColor(360 - m_ColorSlider.Value, 1, 1);
             hsv.S = p.X;
             hsv.V = 1 - p.Y;
@@ -656,7 +635,6 @@ namespace Samples.ColorPicker
             m_color.ScA = (float)GetValue(ScAProperty);
             SetValue(HexadecimalStringProperty, m_color.ToString());
             shouldFindPoint = true;
-
         }
 
         #endregion
@@ -680,6 +658,4 @@ namespace Samples.ColorPicker
     }
 
     #endregion ColorPicker
-
-
 }
