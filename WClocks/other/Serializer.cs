@@ -132,12 +132,6 @@ namespace WClocks
             }
         }
 
-        public static T LoadFromAssemblyXml<T>(String path, String mark, Action<String> warnDelegate = null)
-        {
-            string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            return LoadFromXml<T>(Path.Combine(assemblyPath, path));
-        }
-
 
         public static T SafeLoadFromXml<T>(String path, String mark, Action<String> warnDelegate = null)
         {
@@ -163,12 +157,6 @@ namespace WClocks
                 if (warnDelegate != null) warnDelegate(error);
                 return default(T);
             }
-        }
-
-        public static T SafeLoadFromAssemblyXml<T>(String path, String mark, Action<String> warnDelegate = null)
-        {
-            string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            return SafeLoadFromXml<T>(Path.Combine(assemblyPath, path), mark, warnDelegate);
         }
     }
 }
