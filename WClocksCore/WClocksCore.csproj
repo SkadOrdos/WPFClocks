@@ -15,6 +15,7 @@
     <Company />
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>WClocks_TemporaryKey.pfx</AssemblyOriginatorKeyFile>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <Authors>Serhii Vishnov</Authors>
     <Copyright>WClocks @ 2020</Copyright>
   </PropertyGroup>

@@ -20,6 +20,8 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <Authors>Serhii Vishnov</Authors>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>icons\clock.ico</ApplicationIcon>
