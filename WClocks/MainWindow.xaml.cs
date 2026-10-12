@@ -152,6 +152,7 @@ namespace WClocks
             this.Closed += MainWindow_Closed;
         }
 
+        WeatherService weatherService;
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             WinExtern.DisableWindowSwitcher(Application.Current.MainWindow);
@@ -159,6 +160,9 @@ namespace WClocks
             LoadSettings();
             // Init timer only after load window
             InitClock();
+            // Load custom services
+            weatherService = new WeatherService(TimeSpan.FromSeconds(119)); // ~2 min is suitable interval
+            weatherService.WeatherUpdate += WeatherService_WeatherUpdate;
         }
 
         private void MainWindow_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -289,6 +293,11 @@ namespace WClocks
             this.Left = (int)newPosition.X; // Truncate float part
             this.Top = (int)newPosition.Y; // Truncate float part
             return newPosition;
+        }
+
+        private void WeatherService_WeatherUpdate(object sender, WeatherArgs e)
+        {
+            blockTemp.Text = String.Format("{0}°", e.TemperatureC);
         }
 
         #region// Menu
@@ -426,6 +435,12 @@ namespace WClocks
                     shapeElement.Fill = shapeElement.Stroke = userColorBrush;
             }
 
+            foreach (var labelElement in clocksGrid.Children.OfType<TextBlock>())
+            {
+                if (labelElement.Tag == null)
+                    labelElement.Foreground = userColorBrush;
+            }
+
             UpdateSettings(sett => sett.FaceColor.SetColor(mediaColor));
         }
 
@@ -452,6 +467,8 @@ namespace WClocks
         {
             UpdateClock(true);
             StartTimer();
+
+            weatherService?.UpdateWeatherState();
             this.UpdateLayout();
         }
 
