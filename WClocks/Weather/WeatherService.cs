@@ -32,10 +32,15 @@ namespace WClocks
         private void Timer_Tick(object sender, EventArgs e)
         {
             if ((DateTime.UtcNow - lastCheckTime).TotalMilliseconds >= updateInterval)
-                UpdateWeatherState();
+                UpdateWeatherStateAsync();
         }
 
         DateTime lastCheckTime = DateTime.MinValue;
+        public Task UpdateWeatherStateAsync()
+        {
+            return Task.Factory.StartNew(() => UpdateWeatherState());
+        }
+
         public void UpdateWeatherState()
         {
             try

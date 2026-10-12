@@ -163,6 +163,7 @@ namespace WClocks
             // Load custom services
             weatherService = new WeatherService(TimeSpan.FromSeconds(119)); // ~2 min is suitable interval
             weatherService.WeatherUpdate += WeatherService_WeatherUpdate;
+            weatherService?.UpdateWeatherStateAsync();
         }
 
         private void MainWindow_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -297,7 +298,7 @@ namespace WClocks
 
         private void WeatherService_WeatherUpdate(object sender, WeatherArgs e)
         {
-            blockTemp.Text = String.Format("{0}°", e.TemperatureC);
+            Dispatcher.Invoke(() => blockTemp.Text = String.Format("{0}°", e.TemperatureC), DispatcherPriority.Normal);
         }
 
         #region// Menu
@@ -467,8 +468,8 @@ namespace WClocks
         {
             UpdateClock(true);
             StartTimer();
-
-            weatherService?.UpdateWeatherState();
+                        
+            weatherService?.UpdateWeatherStateAsync();
             this.UpdateLayout();
         }
 
