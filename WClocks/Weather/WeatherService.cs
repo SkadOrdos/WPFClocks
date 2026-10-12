@@ -45,7 +45,11 @@ namespace WClocks
                 {
                     // Do not suppress prompt
                     watcher.TryStart(false, TimeSpan.FromMilliseconds(1000));
-                    Task.Delay(1000).Wait(); // Need wait to grant permission
+                    while (watcher.Permission == System.Device.Location.GeoPositionPermission.Unknown ||
+                        DateTime.UtcNow - lastCheckTime <= TimeSpan.FromMilliseconds(1000))
+                    {
+                        Task.Delay(127).Wait(); // Need wait to grant permission
+                    }                    
 
                     System.Device.Location.GeoCoordinate coord = watcher.Position.Location;
                     if (!coord.IsUnknown)
