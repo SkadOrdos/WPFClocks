@@ -69,6 +69,26 @@ namespace WClocks
             }
         }
 
+        [Serializable]
+        public class CoordinateSet
+        {
+            public double Lat { get; set; } = double.NaN;
+            public double Lon { get; set; } = double.NaN;
+
+            [XmlIgnore]
+            public bool IsUnknown => Double.IsNaN(Lat) || Double.IsNaN(Lon);
+
+            public CoordinateSet()
+            { }
+
+            public CoordinateSet(double lat, double lon)
+            {
+                this.Lat = lat;
+                this.Lon = lon;
+            }
+        }
+
+
 
         public ColorSet FaceColor { get; set; }
 
@@ -82,6 +102,9 @@ namespace WClocks
 
         public bool ShowHeader { get; set; } = true;
 
+        public bool ShowTemperature { get; set; } = true;
+
+        public CoordinateSet Coordinate { get; set; } = new CoordinateSet(Double.NaN, Double.NaN);
 
         public WClockSet()
         {

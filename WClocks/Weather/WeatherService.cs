@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Device.Location;
 using System.Globalization;
 using System.Threading.Tasks;
 using System.Windows.Threading;
@@ -7,6 +8,8 @@ namespace WClocks
 {
     public class WeatherArgs : EventArgs
     {
+        public double Latitude;
+        public double Longitude;
         public int TemperatureC;
     }
 
@@ -14,6 +17,8 @@ namespace WClocks
     internal class WeatherService
     {
         public event EventHandler<WeatherArgs> WeatherUpdate = delegate { };
+
+        public GeoCoordinate Coordinate { get; set; }
 
         DispatcherTimer timer;
         long updateInterval = -1;
@@ -23,10 +28,20 @@ namespace WClocks
             if ((long)timeSpan.TotalMilliseconds > 0)
             {
                 timer = new DispatcherTimer();
-                timer.Interval = TimeSpan.FromSeconds(17);
+                timer.Interval = TimeSpan.FromMilliseconds(1700);
                 timer.Tick += Timer_Tick;
                 timer.Start();
             }
+        }
+
+        public void Start()
+        {
+            lastCheckTime = DateTime.MinValue; // Reset time to update timer method
+        }
+
+        public void Stop()
+        {
+            lastCheckTime = DateTime.MaxValue; // Disable timer method condition
         }
 
         private void Timer_Tick(object sender, EventArgs e)
@@ -54,11 +69,16 @@ namespace WClocks
                         DateTime.UtcNow - lastCheckTime <= TimeSpan.FromMilliseconds(1000))
                     {
                         Task.Delay(127).Wait(); // Need wait to grant permission
-                    }                    
+                    }
 
-                    System.Device.Location.GeoCoordinate coord = watcher.Position.Location;
-                    if (!coord.IsUnknown)
-                        RaiseWeatherUpdate(coord.Latitude, coord.Longitude);
+                    System.Device.Location.GeoCoordinate location = watcher.Position.Location;
+                    if (!location.IsUnknown) Coordinate = new GeoCoordinate(location.Latitude, location.Longitude);
+
+                    // Get weather by saved location
+                    if (!this.Coordinate.IsUnknown)
+                    {
+                        RaiseWeatherUpdate(Coordinate.Latitude, Coordinate.Longitude);
+                    }
                 }
             }
             catch (Exception ex)
@@ -86,13 +106,12 @@ namespace WClocks
                     if (weather?.current != null)
                     {
                         int tempC = (int)Math.Round(weather.current.temperature_2m);
-                        WeatherUpdate.Invoke(this, new WeatherArgs() { TemperatureC = tempC });
+                        WeatherUpdate.Invoke(this, new WeatherArgs() { Latitude = lat, Longitude = lon, TemperatureC = tempC });
                     }
                 }
             }
             catch (Exception ex)
             {
-
             }
         }
     }

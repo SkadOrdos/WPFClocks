@@ -74,6 +74,18 @@ namespace WClocks
 
         #endregion
 
+        #region Weather Text Dependency Property
+
+        public static readonly DependencyProperty TemperatureTextProperty = DependencyProperty.Register("TemperatureText", typeof(string), typeof(MainWindow), new UIPropertyMetadata(String.Empty));
+
+        public string TemperatureText
+        {
+            get { return (string)GetValue(TemperatureTextProperty); }
+            set { SetValue(TemperatureTextProperty, value); }
+        }
+
+        #endregion
+
         readonly AutorunManager autorunManager;
         readonly DispatcherTimer mainTimer = new DispatcherTimer();
         public static readonly string UserAppFolder = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
@@ -161,9 +173,10 @@ namespace WClocks
             // Init timer only after load window
             InitClock();
             // Load custom services
-            weatherService = new WeatherService(TimeSpan.FromSeconds(119)); // ~2 min is suitable interval
+            weatherService = new WeatherService(TimeSpan.FromMinutes(59));
+            weatherService.Coordinate = new System.Device.Location.GeoCoordinate(settings.Coordinate.Lat, settings.Coordinate.Lon);
             weatherService.WeatherUpdate += WeatherService_WeatherUpdate;
-            weatherService?.UpdateWeatherStateAsync();
+            weatherService.Start();
         }
 
         private void MainWindow_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -298,7 +311,9 @@ namespace WClocks
 
         private void WeatherService_WeatherUpdate(object sender, WeatherArgs e)
         {
-            Dispatcher.Invoke(() => blockTemp.Text = String.Format("{0}°", e.TemperatureC), DispatcherPriority.Normal);
+            Dispatcher.Invoke(() => TemperatureText = String.Format("{0}°", e.TemperatureC), DispatcherPriority.Normal);
+            if (settings?.Coordinate.Lat != e.Latitude || settings?.Coordinate.Lon != e.Longitude)
+                UpdateSettings(sett => sett.Coordinate = new WClockSet.CoordinateSet(e.Latitude, e.Longitude));
         }
 
         #region// Menu
@@ -307,6 +322,7 @@ namespace WClocks
         {
             itemAutorun.IsChecked = autorunManager.IsAutorunEnabled;
             itemShowHeader.IsChecked = this.ShowHeader = settings.ShowHeader;
+            itemShowTemperature.IsChecked = settings.ShowTemperature;
         }
 
         private MenuItem FindMenuItem(MenuItem ownerMenu, string tag)
@@ -455,6 +471,24 @@ namespace WClocks
             SetShapeColor(GetUserDrawingColor((SolidColorBrush)pathEllipse.Fill));
         }
 
+        private void MenuShowTemperature_Click(object sender, RoutedEventArgs e)
+        {
+            var menuItem = (MenuItem)sender;
+            bool showTemperature = !menuItem.IsChecked;
+            if (showTemperature)
+            {
+                weatherService.Start();
+            }
+            else
+            {
+                TemperatureText = String.Empty;
+                weatherService.Stop();
+            }
+
+            blockTemp.Visibility = new XBoolVisibilityConverter().Convert(showTemperature);
+            UpdateSettings(sett => sett.ShowTemperature = showTemperature);
+        }
+
         private void MenuAutorun_Click(object sender, RoutedEventArgs e)
         {
             var menuItem = (MenuItem)sender;
@@ -468,7 +502,7 @@ namespace WClocks
         {
             UpdateClock(true);
             StartTimer();
-                        
+
             weatherService?.UpdateWeatherStateAsync();
             this.UpdateLayout();
         }
