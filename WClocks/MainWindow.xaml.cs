@@ -84,6 +84,14 @@ namespace WClocks
             set { SetValue(TemperatureTextProperty, value); }
         }
 
+        public static readonly DependencyProperty TemperatureTooltipProperty = DependencyProperty.Register("TemperatureTooltip", typeof(string), typeof(MainWindow), new UIPropertyMetadata(String.Empty));
+
+        public string TemperatureTooltip
+        {
+            get { return (string)GetValue(TemperatureTooltipProperty); }
+            set { SetValue(TemperatureTooltipProperty, value); }
+        }
+
         #endregion
 
         readonly AutorunManager autorunManager;
@@ -311,7 +319,11 @@ namespace WClocks
 
         private void WeatherService_WeatherUpdate(object sender, WeatherArgs e)
         {
-            Dispatcher.Invoke(() => TemperatureText = String.Format("{0}°", e.TemperatureC), DispatcherPriority.Normal);
+            Dispatcher.Invoke(() =>
+            {
+                TemperatureText = String.Format("{0}°", e.TemperatureC); TemperatureTooltip = String.Format("Temperature: {0} °C\nHumidity: {1}%\nWind Speed: {2} km/h", e.TemperatureC, e.HumidityRh, e.WindKmh);
+            }, DispatcherPriority.Normal);
+
             if (settings?.Coordinate.Lat != e.Latitude || settings?.Coordinate.Lon != e.Longitude)
                 UpdateSettings(sett => sett.Coordinate = new WClockSet.CoordinateSet(e.Latitude, e.Longitude));
         }

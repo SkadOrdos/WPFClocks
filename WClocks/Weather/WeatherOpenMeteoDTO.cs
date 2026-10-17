@@ -26,6 +26,7 @@ namespace WClocks
         public string temperature_2m { get; set; }
         public string relative_humidity_2m { get; set; }
         public string rain { get; set; }
+        public string precipitation { get; set; }
         public string wind_speed_10m { get; set; }
     }
 
@@ -36,6 +37,7 @@ namespace WClocks
         public double temperature_2m { get; set; }
         public int relative_humidity_2m { get; set; }
         public double rain { get; set; }
+        public double precipitation { get; set; }
         public double wind_speed_10m { get; set; }
     }
 }

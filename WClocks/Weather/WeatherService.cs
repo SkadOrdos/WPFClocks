@@ -11,6 +11,10 @@ namespace WClocks
         public double Latitude;
         public double Longitude;
         public int TemperatureC;
+        public int HumidityRh;
+        public double WindKmh;
+
+        public WeatherArgs() { }
     }
 
 
@@ -18,35 +22,43 @@ namespace WClocks
     {
         public event EventHandler<WeatherArgs> WeatherUpdate = delegate { };
 
-        public GeoCoordinate Coordinate { get; set; }
+        public GeoCoordinate Coordinate { get; set; } = new GeoCoordinate(Double.NaN, Double.NaN);
 
-        DispatcherTimer timer;
-        long updateInterval = -1;
-        public WeatherService(TimeSpan timeSpan)
+        DispatcherTimer _timer;
+        long _updateInterval = -1;
+        public WeatherService(TimeSpan updateInterval)
         {
-            updateInterval = (long)timeSpan.TotalMilliseconds;
-            if ((long)timeSpan.TotalMilliseconds > 0)
+            _updateInterval = (long)updateInterval.TotalMilliseconds;
+            if ((long)updateInterval.TotalMilliseconds > 0)
             {
-                timer = new DispatcherTimer();
-                timer.Interval = TimeSpan.FromMilliseconds(1700);
-                timer.Tick += Timer_Tick;
-                timer.Start();
+                _timer = new DispatcherTimer();
+                _timer.Interval = TimeSpan.FromMilliseconds(1700);
+                _timer.Tick += Timer_Tick;
+                _timer.Start();
             }
+        }
+
+        public WeatherService(GeoCoordinate geoCoordinate, TimeSpan updateInterval)
+            : this(updateInterval)
+        {
+            Coordinate = geoCoordinate;
         }
 
         public void Start()
         {
             lastCheckTime = DateTime.MinValue; // Reset time to update timer method
+            _timer.Start();
         }
 
         public void Stop()
         {
+            _timer.Stop();
             lastCheckTime = DateTime.MaxValue; // Disable timer method condition
         }
 
         private void Timer_Tick(object sender, EventArgs e)
         {
-            if ((DateTime.UtcNow - lastCheckTime).TotalMilliseconds >= updateInterval)
+            if ((DateTime.UtcNow - lastCheckTime).TotalMilliseconds >= _updateInterval)
                 UpdateWeatherStateAsync();
         }
 
@@ -92,7 +104,7 @@ namespace WClocks
             try
             {
                 // Request current weather from Open-Meteo API
-                string url = $"https://api.open-meteo.com/v1/forecast?latitude={lat.ToString(CultureInfo.InvariantCulture)}&longitude={lon.ToString(CultureInfo.InvariantCulture)}&current=temperature_2m,relative_humidity_2m,rain,wind_speed_10m&forecast_days=1";
+                string url = $"https://api.open-meteo.com/v1/forecast?latitude={lat.ToString(CultureInfo.InvariantCulture)}&longitude={lon.ToString(CultureInfo.InvariantCulture)}&current=temperature_2m,relative_humidity_2m,rain,precipitation,wind_speed_10m&forecast_days=1";
 
                 using (var client = new System.Net.Http.HttpClient())
                 {
@@ -105,8 +117,16 @@ namespace WClocks
                     // If we have a valid weather object, invoke the event with the current temperature
                     if (weather?.current != null)
                     {
-                        int tempC = (int)Math.Round(weather.current.temperature_2m);
-                        WeatherUpdate.Invoke(this, new WeatherArgs() { Latitude = lat, Longitude = lon, TemperatureC = tempC });
+                        var currWeather = weather.current;
+                        int tempC = (int)Math.Round(currWeather.temperature_2m);
+                        WeatherUpdate.Invoke(this, new WeatherArgs()
+                        {
+                            Latitude = lat,
+                            Longitude = lon,
+                            TemperatureC = tempC,
+                            HumidityRh = currWeather.relative_humidity_2m,
+                            WindKmh = currWeather.wind_speed_10m
+                        });
                     }
                 }
             }
