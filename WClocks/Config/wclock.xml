@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<WClockSet xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <FaceColor A="255" R="230" G="230" B="230" />
+    <Location>Desktop</Location>
+    <Position>
+        <X>0</X>
+        <Y>0</Y>
+    </Position>
+    <Size>100</Size>
+    <ShowHeader>true</ShowHeader>
+    <ShowTemperature>true</ShowTemperature>
+    <Coordinate>
+        <Lat>NaN</Lat>
+        <Lon>NaN</Lon>
+    </Coordinate>
+</WClockSet>
