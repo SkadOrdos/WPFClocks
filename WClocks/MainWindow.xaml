@@ -90,7 +90,7 @@
             <TextBlock x:Name="blockFirm" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="125,180,0,0" 
                        FontSize="14" FontStyle="Italic" FontFamily="Consolas" Tag="Brand"></TextBlock>
             <TextBlock x:Name="blockTemp" Foreground="White" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="177,117,5,117"
-                       FontSize="14" FontStyle="Italic" FontFamily="Consolas" Text="{Binding Path=TemperatureText}" ToolTip="{Binding Path=TemperatureTooltip}"></TextBlock>
+                       FontSize="14" FontStyle="Italic" FontFamily="Consolas" Text="{Binding Path=TemperatureText}" ToolTip="{Binding Path=TemperatureTooltip}" Cursor="Help"></TextBlock>
             <Line Stroke="Black" StrokeThickness="2" X1="125" Y1="140" X2="125" Y2="60" x:Name="ShadowLineHour" RenderTransformOrigin="0.5,0.5" Opacity="0.25" Tag="ShadowLine" Panel.ZIndex="1" Grid.ColumnSpan="2">
                 <Line.Effect>
                     <BlurEffect Radius="1"></BlurEffect>

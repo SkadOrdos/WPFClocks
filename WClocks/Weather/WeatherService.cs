@@ -13,6 +13,7 @@ namespace WClocks
         public int TemperatureC;
         public int HumidityRh;
         public double WindKmh;
+        public DateTime UtcTime;
 
         public WeatherArgs() { }
     }
@@ -125,7 +126,8 @@ namespace WClocks
                             Longitude = lon,
                             TemperatureC = tempC,
                             HumidityRh = currWeather.relative_humidity_2m,
-                            WindKmh = currWeather.wind_speed_10m
+                            WindKmh = currWeather.wind_speed_10m,
+                            UtcTime = DateTime.Parse(currWeather.time)
                         });
                     }
                 }

@@ -321,7 +321,9 @@ namespace WClocks
         {
             Dispatcher.Invoke(() =>
             {
-                TemperatureText = String.Format("{0}°", e.TemperatureC); TemperatureTooltip = String.Format("Temperature: {0} °C\nHumidity: {1}%\nWind Speed: {2} km/h", e.TemperatureC, e.HumidityRh, e.WindKmh);
+                DateTime localTime = e.UtcTime.ToLocalTime();
+                string strTime = localTime.ToString("HH:mm") + $" {localTime.ToShortDateString()}";
+                TemperatureText = String.Format("{0}°", e.TemperatureC); TemperatureTooltip = String.Format("Temperature: {0} °C\nHumidity: {1}%\nWind Speed: {2} km/h\nLast Update: {3}", e.TemperatureC, e.HumidityRh, e.WindKmh, strTime);
             }, DispatcherPriority.Normal);
 
             if (settings?.Coordinate.Lat != e.Latitude || settings?.Coordinate.Lon != e.Longitude)
