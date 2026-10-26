@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Device.Location;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml.Serialization;
@@ -89,6 +90,8 @@ namespace WClocks
                 this.Lat = lat;
                 this.Lon = lon;
             }
+
+            public GeoCoordinate ToGeoCoordinate() => new GeoCoordinate(Lat, Lon);
         }
 
 

@@ -69,6 +69,13 @@ namespace WClocks
             return Task.Factory.StartNew(() => UpdateWeatherState());
         }
 
+        public void UpdateWeatherState(GeoCoordinate newCoordinate)
+        {
+            lastCheckTime = DateTime.UtcNow;
+            this.Coordinate = newCoordinate;
+            RaiseWeatherUpdate(newCoordinate.Latitude, newCoordinate.Longitude);
+        }
+
         public void UpdateWeatherState()
         {
             try

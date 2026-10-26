@@ -62,14 +62,14 @@
             </Grid.LayoutTransform>
             <Grid.ContextMenu>
                 <ContextMenu x:Name="clocksContextMenu" Opened="Clocks_ContextMenuOpening">
+                    <MenuItem Header="Show Header" x:Name="itemShowHeader" Click="MenuShowHeader_Click"></MenuItem>
+                    <Separator></Separator>
                     <MenuItem Header="Location" x:Name="clocksLocationMenu">
                         <MenuItem Header="Desktop" x:Name="itemLocationDesktop" Click="MenuLocation_Click" Tag="{x:Static WClocks:Locations.Desktop}"></MenuItem>
                         <MenuItem Header="TopMost" x:Name="itemLocationTopMost" Click="MenuLocation_Click" Tag="{x:Static WClocks:Locations.TopMost}"></MenuItem>
                         <MenuItem Header="Float" x:Name="itemLocationFloat" Click="MenuLocation_Click" Tag="{x:Static WClocks:Locations.Float}"></MenuItem>
                     </MenuItem>
                     <MenuItem Header="Position" x:Name="itemPosition" Click="MenuPosition_Click"></MenuItem>
-                    <Separator></Separator>
-                    <MenuItem Header="Show Header" x:Name="itemShowHeader" Click="MenuShowHeader_Click"></MenuItem>
                     <MenuItem Header="Size" x:Name="clocksSizeMenu">
                         <MenuItem Header="50%" Click="MenuSize_Click" Tag="50"></MenuItem>
                         <MenuItem Header="75%" Click="MenuSize_Click" Tag="75"></MenuItem>
@@ -79,7 +79,10 @@
                         <MenuItem Header="200%" Click="MenuSize_Click" Tag="200"></MenuItem>
                     </MenuItem>
                     <MenuItem Header="Color" Click="MenuColor_Click"></MenuItem>
+                    <Separator></Separator>
+                    <MenuItem Header="Coordinates" x:Name="itemCoordinates" Click="MenuCoordinates_Click"></MenuItem>
                     <MenuItem Header="Temperature" x:Name="itemShowTemperature" Click="MenuShowTemperature_Click"></MenuItem>
+                    <Separator></Separator>
                     <MenuItem Header="Autorun" x:Name="itemAutorun" Click="MenuAutorun_Click"></MenuItem>
                     <MenuItem Header="Refresh" Click="MenuRefresh_Click"></MenuItem>
                     <Separator></Separator>

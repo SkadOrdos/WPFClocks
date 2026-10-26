@@ -1,1 +1,0 @@
-CALL "C:\Program Files (x86)\Microsoft SDKs\ClickOnce\SignTool\signtool.exe" sign /a /fd SHA256 .\bin\Release\WClocks.exe

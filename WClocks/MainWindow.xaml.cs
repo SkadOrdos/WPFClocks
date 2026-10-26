@@ -119,11 +119,15 @@ namespace WClocks
             string configPath = GetConfigPath();
             try
             {
-                settings = Serializer.SafeLoadFromXml<WClockSet>(configPath, null) ?? new WClockSet();
+                settings = Serializer.SafeLoadFromXml<WClockSet>(configPath, null);
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Launch error\n\nError load config from\n{configPath}\n\nDetails: {ex.Message}", APP_NAME, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                if (settings == null) settings = new WClockSet();
             }
 
             SetLocationOptions(settings.Location);
@@ -132,17 +136,12 @@ namespace WClocks
 
             headerGrid.Visibility = new XBoolVisibilityConverter().Convert(settings.ShowHeader);
 
-            var screenRect = new Rect(0, 0, SystemParameters.WorkArea.Width - this.Width, SystemParameters.WorkArea.Height - this.Height);
-            if (screenRect.Contains(settings.Position))
+            var screenArea = new Rect(0, 0, SystemParameters.WorkArea.Width - this.Width, SystemParameters.WorkArea.Height - this.Height);
+            if (screenArea.Contains(settings.Position))
             {
                 SetWindowPosition(settings.Position);
             }
             else this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
-        }
-
-        private void SaveSettings()
-        {
-            UpdateSettings();
         }
 
         private void UpdateSettings(Action<WClockSet> updateSettings = null)
@@ -483,6 +482,23 @@ namespace WClocks
         private void MenuColor_Click(object sender, RoutedEventArgs e)
         {
             SetShapeColor(GetUserDrawingColor((SolidColorBrush)pathEllipse.Fill));
+        }
+
+        private void MenuCoordinates_Click(object sender, RoutedEventArgs e)
+        {
+            var geoScreen = new GeoWindow(this.settings.Coordinate.ToGeoCoordinate());
+            bool okResult = (geoScreen.ShowDialog() == true);
+
+            if (okResult)
+            {
+                var geo = geoScreen.GetCoordinatesArgs().Coordinate;
+                if (!geo.IsUnknown)
+                {
+                    weatherService?.UpdateWeatherState(geo);
+                    if (settings?.Coordinate.Lat != geo.Latitude || settings?.Coordinate.Lon != geo.Longitude)
+                        UpdateSettings(sett => sett.Coordinate = new WClockSet.CoordinateSet(geo.Latitude, geo.Longitude));
+                }
+            }
         }
 
         private void MenuShowTemperature_Click(object sender, RoutedEventArgs e)

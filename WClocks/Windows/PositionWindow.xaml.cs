@@ -59,7 +59,7 @@ namespace WClocks
                 button.Tag = new Point(rowIndex, colIndex); // Write button location in tag
 
                 // Set transform to all buttons except center
-                string imageUri = @"icons/arrow-position.png";
+                string imageUri = @"../icons/arrow-position.png";
                 Transform imageTransform = null;
                 if (i != centerIndex)
                 {
@@ -73,7 +73,7 @@ namespace WClocks
                 }
                 else
                 {
-                    imageUri = @"icons/arrow-x.png";
+                    imageUri = @"../icons/arrow-x.png";
                 }
 
                 // Add images to button content
